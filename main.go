@@ -49,6 +49,17 @@ type IGun interface {
 	getPower() int
 }
 
+type IDatabase interface {
+	create(string, map[string]string) (bool, error)
+}
+
+type phone struct {
+	info     map[string]string
+	location string
+}
+
+func (p *phone) create(s string, m map[string]string) bool
+
 type gun struct {
 	name  string
 	power int
