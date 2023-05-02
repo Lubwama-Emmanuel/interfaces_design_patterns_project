@@ -1,6 +1,15 @@
-// const printName = (linya) => console.log(linya);
+const arr = (nums) => {
+  const mySet = new Set();
+  const final = [];
+  for (const num of nums) {
+    mySet.add(num);
+  }
+  console.log(mySet);
 
-const printName = function (name) {
-  console.log(name);
+  for (const v of mySet) {
+    final.push(v);
+  }
+  console.log(final);
 };
-printName("Emmanuel");
+
+arr([0, 0, 1, 1, 1, 2, 2, 3, 3, 4]);
