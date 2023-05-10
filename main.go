@@ -1,196 +1,71 @@
-// package main
-
-// import "fmt"
-
-// // var lock = &sync.Mutex{}
-// // var once sync.Once
-
-// // type single struct {
-// // }
-
-// // var singleInstance *single
-
-// // func getInstance() *single {
-
-// // 	if singleInstance == nil {
-// // 		lock.Lock()
-// // 		defer lock.Unlock()
-// // 		if singleInstance == nil {
-// // 			fmt.Println("Creating single instance now...")
-// // 			singleInstance = &single{}
-// // 		} else {
-// // 			fmt.Println("Single instance already created")
-// // 		}
-
-// // 	} else {
-// // 		fmt.Println("Single instance already created")
-// // 	}
-// // 	return singleInstance
-// // }
-
-// // func getInstance() *single {
-// // 	if singleInstance == nil {
-// // 		once.Do(
-// // 			func() {
-// // 				fmt.Println("Creating single instance now ...")
-// // 				singleInstance = &single{}
-// // 			})
-// // 	} else {
-// // 		fmt.Println("Single instance already created")
-// // 	}
-
-// // 	return singleInstance
-// // }
-
-// type IGun interface {
-// 	setName(name string)
-// 	setPower(power int)
-// 	getName() string
-// 	getPower() int
-// }
-
-// type IDatabase interface {
-// 	create(string, map[string]string) (bool, error)
-// }
-
-// type phone struct {
-// 	info     map[string]string
-// 	location string
-// }
-
-// func (p *phone) create(s string, m map[string]string) bool
-
-// type gun struct {
-// 	name  string
-// 	power int
-// }
-
-// func (g *gun) setName(name string) {
-// 	g.name = name
-// }
-
-// func (g *gun) setPower(power int) {
-// 	g.power = power
-// }
-
-// func (g *gun) getName() string {
-// 	return g.name
-// }
-
-// func (g *gun) getPower() int {
-// 	return g.power
-// }
-
-// type Ak47 struct {
-// 	gun
-// }
-
-// func NewAK47() IGun {
-// 	return &Ak47{
-// 		gun: gun{
-// 			name:  "AK47",
-// 			power: 4,
-// 		},
-// 	}
-// }
-
-// type musket struct {
-// 	gun
-// }
-
-// func NewMuskket() IGun {
-// 	return &musket{
-// 		gun: gun{
-// 			name:  "Musket",
-// 			power: 1,
-// 		},
-// 	}
-// }
-
-// func getGun(gunType string) (IGun, error) {
-// 	if gunType == "AK47" {
-// 		return NewAK47(), nil
-// 	} else if gunType == "Musket" {
-// 		return NewMuskket(), nil
-// 	}
-// 	return nil, fmt.Errorf("wrong gun type")
-// }
-
-// func printDetails(g IGun) {
-// 	fmt.Printf("Gun: %s", g.getName())
-// 	fmt.Println()
-// 	fmt.Printf("Power: %d", g.getPower())
-// 	fmt.Println()
-// }
-
-// func main() {
-// 	ak47, _ := getGun("AK47")
-// 	musket, _ := getGun("Musket")
-
-// 	printDetails(ak47)
-// 	printDetails(musket)
-
-// }
 package main
 
-import "fmt"
+import (
+	// inmemory "github.com/Lubwama-Emmannuel/Interfaces/in_memory"
+	"fmt"
 
-type Database interface {
-	create(string, map[string]string)
-	read(string) map[string]string
-	update(string, map[string]string)
-	delete(string)
-}
-
-type phone struct {
-	location    string
-	information map[string]string
-}
-
-func (p *phone) create(l string, s map[string]string) {
-	p.location = l
-	p.information = s
-}
-
-func (p phone) read(l string) map[string]string {
-	if p.location == l {
-		return p.information
-	}
-	return nil
-}
-
-func (p *phone) update(l string, s map[string]string) {
-	if p.location == l {
-		p.information = s
-	}
-}
-
-func (p *phone) delete(l string) {
-	if p.location == l {
-		p = nil
-	}
-}
-
-func newStruct() *phone {
-	return &phone{}
-}
+	file_system "github.com/Lubwama-Emmannuel/Interfaces/fileSystem"
+)
 
 func main() {
-	new := newStruct()
-	map1 := map[string]string{
-		"Name":   "Emmanuel",
-		"Second": "Lubwama",
+	db := file_system.NewFile()
+
+	// Create a new record
+	err := db.Create("Hello, File!")
+	if err != nil {
+		fmt.Println("an error occurred creating file", err)
 	}
-	new.create("first", map1)
-	new.update("first", map[string]string{
-		"Name":   "Rex",
-		"Second": "Munil",
-	})
 
-	new.delete("first")
-	value := new.read("first")
+	// Read created record
+	data, err := db.Read()
+	if err != nil {
+		fmt.Println("an error occurred reading created file", err)
+	}
+	fmt.Println(data)
 
-	fmt.Println(new)
-	fmt.Println(value)
+	// Update the record
+	err = db.Update("Update worked very well")
+	if err != nil {
+		fmt.Println("an error occurred reading updating file", err)
+	}
+
+	// Read the updated record
+	updatedData, err := db.Read()
+	if err != nil {
+		fmt.Println("an error occurred reading updated file", err)
+
+	}
+	fmt.Println(updatedData)
+
+	// db := &inmemory.InMemoryDatabase{}
+	// if err := db.Create("Hello, Emmanuel!"); err != nil {
+	// 	fmt.Println("An error occurred during read")
+	// }
+
+	// data, err := db.Read()
+	// if err != nil {
+	// 	fmt.Println("An error occurred during reading data")
+	// }
+	// fmt.Println("Created data", data)
+
+	// if err := db.Update("Hello, Rex!"); err != nil {
+	// 	fmt.Println("An error occurred during update")
+	// }
+
+	// updatedData, err := db.Read()
+	// if err != nil {
+	// 	fmt.Println("An error occurred during reading data")
+	// }
+	// fmt.Println("Updated data", updatedData)
+
+	// if err := db.Delete(); err != nil {
+	// 	fmt.Println("An error occurred during delete")
+	// }
+
+	// deleted, err := db.Read()
+	// if err != nil {
+	// 	fmt.Println("An error occurred during reading data")
+	// }
+	// fmt.Println("Deleted", deleted)
 
 }
