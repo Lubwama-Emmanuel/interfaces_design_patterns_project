@@ -1,71 +1,55 @@
 package main
 
 import (
-	// inmemory "github.com/Lubwama-Emmannuel/Interfaces/in_memory"
-	"fmt"
+	log "github.com/sirupsen/logrus"
 
-	file_system "github.com/Lubwama-Emmannuel/Interfaces/fileSystem"
+	"github.com/Lubwama-Emmannuel/Interfaces/app"
+	"github.com/Lubwama-Emmannuel/Interfaces/memory"
+	// file_system "github.com/Lubwama-Emmannuel/Interfaces/fileSystem"
 )
 
 func main() {
-	db := file_system.NewFile()
+	// storage := file_system.NewFileSytemDatabase("data.txt")
+	storage := memory.NewMemoryStorage()
+
+	db := app.NewApp(storage)
+
+	name := "rex"
+	phone := "0706039119"
 
 	// Create a new record
-	err := db.Create("Hello, File!")
+	err := db.SavePhoneNumber(name, phone)
 	if err != nil {
-		fmt.Println("an error occurred creating file", err)
+		log.Error("an error occurred creating file", err)
 	}
 
 	// Read created record
-	data, err := db.Read()
+	data, err := db.GetName(phone)
 	if err != nil {
-		fmt.Println("an error occurred reading created file", err)
+		log.Error("an error occurred reading created file", err)
 	}
-	fmt.Println(data)
+
+	log.Info(data)
 
 	// Update the record
-	err = db.Update("Update worked very well")
+	updateName := "emma"
+	err = db.UpdatePhoneNumber(updateName, phone)
 	if err != nil {
-		fmt.Println("an error occurred reading updating file", err)
+		log.Error("an error occurred reading updating file", err)
 	}
 
 	// Read the updated record
-	updatedData, err := db.Read()
+	updatedData, err := db.GetName(phone)
 	if err != nil {
-		fmt.Println("an error occurred reading updated file", err)
-
+		log.Error("an error occurred reading updated file", err)
 	}
-	fmt.Println(updatedData)
 
-	// db := &inmemory.InMemoryDatabase{}
-	// if err := db.Create("Hello, Emmanuel!"); err != nil {
-	// 	fmt.Println("An error occurred during read")
-	// }
+	log.Info(updatedData)
 
-	// data, err := db.Read()
-	// if err != nil {
-	// 	fmt.Println("An error occurred during reading data")
-	// }
-	// fmt.Println("Created data", data)
+	contacts, err := db.GetAllPhoneNumbers()
+	if err != nil {
+		log.Error("an error occurred getting all numbers", err)
+	}
 
-	// if err := db.Update("Hello, Rex!"); err != nil {
-	// 	fmt.Println("An error occurred during update")
-	// }
-
-	// updatedData, err := db.Read()
-	// if err != nil {
-	// 	fmt.Println("An error occurred during reading data")
-	// }
-	// fmt.Println("Updated data", updatedData)
-
-	// if err := db.Delete(); err != nil {
-	// 	fmt.Println("An error occurred during delete")
-	// }
-
-	// deleted, err := db.Read()
-	// if err != nil {
-	// 	fmt.Println("An error occurred during reading data")
-	// }
-	// fmt.Println("Deleted", deleted)
-
+	log.Info(contacts)
 }
