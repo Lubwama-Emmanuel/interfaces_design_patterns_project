@@ -5,14 +5,6 @@ import (
 	"os"
 )
 
-//go:generate mockgen -destination=mocks/db_mock.go -package=mocks . IDatabase
-type IDatabase interface {
-	Create(data string) error
-	Read() (string, error)
-	Update(data string) error
-	Delete() error
-}
-
 type FileSystemDatabase struct {
 	filename string
 }
@@ -60,16 +52,6 @@ func (db *FileSystemDatabase) Update(data string) error {
 	return nil
 }
 
-func (db *FileSystemDatabase) Delete() error {
-	// Remove the file from the file system
-	err := os.Remove(db.filename)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func NewFile() *FileSystemDatabase {
-	return &FileSystemDatabase{filename: "data.txt"}
+func NewFileSytemDatabase(file string) *FileSystemDatabase {
+	return &FileSystemDatabase{filename: file}
 }
