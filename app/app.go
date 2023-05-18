@@ -28,14 +28,17 @@ func (a *App) SavePhoneNumber(name, phoneNumber string) error {
 		phoneNumber: name,
 	}
 
-	return a.storage.Create("a", newMap)
+	if err := a.storage.Create("a", newMap); err != nil {
+		return fmt.Errorf("an error occurred during creating contact %w", err)
+	}
+
+	return nil
 }
 
 func (a *App) GetName(number string) (string, error) {
 	var name string
 
 	result, err := a.storage.Read("a")
-
 	if err != nil {
 		return "", fmt.Errorf("an error occurred reading %w", err)
 	}
@@ -54,5 +57,9 @@ func (a *App) UpdateName(name, phoneNumber string) error {
 		phoneNumber: name,
 	}
 
-	return a.storage.Update("a", updatedName)
+	if err := a.storage.Update("a", updatedName); err != nil {
+		return fmt.Errorf("an error occurred during updating contact %w", err)
+	}
+
+	return nil
 }
