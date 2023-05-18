@@ -4,7 +4,7 @@ import (
 	"github.com/Lubwama-Emmannuel/Interfaces/models"
 )
 
-type MemoryDatabase struct {
+type MemoryDatabase struct { //nolint:revive
 	data map[string]models.DataObject
 }
 

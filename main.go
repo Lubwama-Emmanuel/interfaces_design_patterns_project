@@ -5,7 +5,6 @@ import (
 
 	"github.com/Lubwama-Emmannuel/Interfaces/app"
 	"github.com/Lubwama-Emmannuel/Interfaces/storage/memory"
-	// file_system "github.com/Lubwama-Emmannuel/Interfaces/fileSystem"
 )
 
 func main() {
@@ -33,6 +32,7 @@ func main() {
 
 	// Update the record
 	updateName := "Lubwama"
+
 	err = db.UpdateName(updateName, phone)
 	if err != nil {
 		log.Error("an error occurred reading updating file", err)
@@ -45,5 +45,4 @@ func main() {
 	}
 
 	log.Info("updated data is: ", updatedData)
-
 }
