@@ -53,7 +53,7 @@ func (a *App) GetName(number string) (string, error) {
 }
 
 func (a *App) UpdateName(name, phoneNumber string) error {
-	updatedName := models.DataObject{
+	updatedName := map[string]string{
 		phoneNumber: name,
 	}
 
