@@ -4,12 +4,12 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Lubwama-Emmannuel/Interfaces/app"
-	"github.com/Lubwama-Emmannuel/Interfaces/storage/memory"
+	filesystem "github.com/Lubwama-Emmannuel/Interfaces/storage/file_system"
 )
 
 func main() {
-	// storage := file_system.NewFileSytemDatabase("data.txt")
-	storage := memory.NewMemoryStorage()
+	// storage := memory.NewMemoryStorage()
+	storage := filesystem.NewFileSytemDatabase("data.json")
 
 	db := app.NewApp(storage)
 
