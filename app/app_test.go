@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
+
 	"github.com/Lubwama-Emmannuel/Interfaces/app"
 	"github.com/Lubwama-Emmannuel/Interfaces/app/mocks"
 	"github.com/Lubwama-Emmannuel/Interfaces/models"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestApp(t *testing.T) {
@@ -36,7 +37,7 @@ func TestApp(t *testing.T) {
 
 				f.storage.EXPECT().Read("a").Return(models.DataObject{"0704660968": "Emmanuel"}, nil)
 
-				f.storage.EXPECT().Update("a", models.DataObject{"Lubwama": "0704660968"}).Return(nil).AnyTimes()
+				f.storage.EXPECT().Update("a", models.DataObject{"0704660968": "Emmanuel"}).Return(nil).AnyTimes()
 			},
 			args: args{
 				name:  "Emmanuel",
@@ -92,14 +93,7 @@ func TestApp(t *testing.T) {
 				return
 			}
 
-			// if data != tc.args.name {
-			// 	assert.Fail(t, fmt.Sprintf("Test %v expected data: %v but got: %v", tc.testName, tc.args.name, data))
-			// 	return
-			// }
-
-			// updateName := "Lubwama"
-
-			err = appInstance.UpdateName(tc.args.phone, tc.args.name)
+			err = appInstance.UpdateName(tc.args.name, tc.args.phone)
 			if err != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
 				return
