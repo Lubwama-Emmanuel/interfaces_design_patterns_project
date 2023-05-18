@@ -13,7 +13,7 @@ func main() {
 
 	db := app.NewApp(storage)
 
-	name := "Emmanuel"
+	name := ""
 	phone := "0706039119"
 
 	// Create a new record
