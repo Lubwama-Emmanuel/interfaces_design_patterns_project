@@ -8,7 +8,7 @@ import (
 	"github.com/Lubwama-Emmannuel/Interfaces/models"
 )
 
-type FileSystemDatabase struct {
+type FileSystemDatabase struct { //nolint:revive
 	filename string
 }
 
@@ -43,12 +43,12 @@ func (db *FileSystemDatabase) Create(path string, data models.DataObject) error 
 	// Encode Data to JSON
 	jsonData, err := json.MarshalIndent(contact, "", " ")
 	if err != nil {
-		return fmt.Errorf("an error occured during json encoding %w", err)
+		return fmt.Errorf("an error occurred during json encoding %w", err)
 	}
 
 	_, err = file.Write(jsonData)
 	if err != nil {
-		return fmt.Errorf("an error occured writing data %w", err)
+		return fmt.Errorf("an error occurred writing data %w", err)
 	}
 
 	return nil
@@ -66,15 +66,15 @@ func (db *FileSystemDatabase) Read(path string) (models.DataObject, error) {
 
 	err := json.NewDecoder(file).Decode(&contact)
 	if err != nil {
-		return models.DataObject{}, fmt.Errorf("an error occured decoding to json %w", err)
+		return models.DataObject{}, fmt.Errorf("an error occurred decoding to json %w", err)
 	}
 
 	if contact.Path == path {
 		return models.DataObject{
 			contact.Phone: contact.Name,
 		}, nil
-
 	}
+
 	return models.DataObject{}, nil
 }
 
@@ -87,6 +87,7 @@ func (db *FileSystemDatabase) Update(path string, data models.DataObject) error 
 	defer file.Close()
 
 	var contact Contact
+
 	err := json.NewDecoder(file).Decode(&contact)
 	if err != nil {
 		return fmt.Errorf("an error occurred decoding to json %w", err)
@@ -104,8 +105,7 @@ func (db *FileSystemDatabase) Update(path string, data models.DataObject) error 
 			return fmt.Errorf("an error occurred during json encoding %w", err)
 		}
 
-		// _, writeErr := file.Write(updatedContact)
-		writeErr := os.WriteFile(db.filename, updatedContact, 0644)
+		writeErr := os.WriteFile(db.filename, updatedContact, 0o644) //nolint:gosec
 		if err != nil {
 			return fmt.Errorf("an error occurred updating data %w", writeErr)
 		}
