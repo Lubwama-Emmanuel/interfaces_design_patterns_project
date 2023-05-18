@@ -1,13 +1,16 @@
+//nolint:staticcheck
 package filesystem_test
 
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 
 	"github.com/Lubwama-Emmannuel/Interfaces/models"
 	filesystem "github.com/Lubwama-Emmannuel/Interfaces/storage/file_system"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestFileSytem(t *testing.T) {
@@ -23,7 +26,9 @@ func TestFileSytem(t *testing.T) {
 		t.Fatalf("failed to create temp file %v", err.Error())
 	}
 
-	defer file.Close()
+	t.Cleanup(func() {
+		defer os.Remove(file.Name())
+	})
 
 	tests := []struct {
 		testName string
@@ -79,7 +84,6 @@ func TestFileSytem(t *testing.T) {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, updateErr))
 				return
 			}
-
 		})
 	}
 }
