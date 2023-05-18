@@ -4,7 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Lubwama-Emmannuel/Interfaces/app"
-	"github.com/Lubwama-Emmannuel/Interfaces/memory"
+	"github.com/Lubwama-Emmannuel/Interfaces/storage/memory"
 	// file_system "github.com/Lubwama-Emmannuel/Interfaces/fileSystem"
 )
 
@@ -14,7 +14,7 @@ func main() {
 
 	db := app.NewApp(storage)
 
-	name := "rex"
+	name := "Emmanuel"
 	phone := "0706039119"
 
 	// Create a new record
@@ -29,11 +29,11 @@ func main() {
 		log.Error("an error occurred reading created file", err)
 	}
 
-	log.Info(data)
+	log.Info("saved data is: ", data)
 
 	// Update the record
-	updateName := "emma"
-	err = db.UpdatePhoneNumber(updateName, phone)
+	updateName := "Lubwama"
+	err = db.UpdateName(updateName, phone)
 	if err != nil {
 		log.Error("an error occurred reading updating file", err)
 	}
@@ -44,12 +44,6 @@ func main() {
 		log.Error("an error occurred reading updated file", err)
 	}
 
-	log.Info(updatedData)
+	log.Info("updated data is: ", updatedData)
 
-	contacts, err := db.GetAllPhoneNumbers()
-	if err != nil {
-		log.Error("an error occurred getting all numbers", err)
-	}
-
-	log.Info(contacts)
 }

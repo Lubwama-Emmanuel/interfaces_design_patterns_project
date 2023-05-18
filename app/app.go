@@ -3,42 +3,44 @@ package app
 import (
 	"fmt"
 
-	log "github.com/sirupsen/logrus"
-
 	"github.com/Lubwama-Emmannuel/Interfaces/models"
 )
 
 //go:generate mockgen -destination=mocks/mock_database.go -package=mocks . IDatabase
 type IDatabase interface {
-	Create(data models.DataObject) error
-	Read() (models.DataObject, error)
-	ReadAll() (models.DataObject, error)
-	Update(data models.DataObject) error
-	// Delete() error
+	Create(path string, data models.DataObject) error
+	Read(path string) (models.DataObject, error)
+	// ReadAll() (models.DataObject, error)
+	Update(path string, data models.DataObject) error
+	// Delete(path string) error
 }
 
 type App struct {
 	storage IDatabase
 }
 
+func NewApp(storage IDatabase) *App {
+	return &App{storage: storage}
+}
+
 func (a *App) SavePhoneNumber(name, phoneNumber string) error {
 	newMap := map[string]string{
-		name:   phoneNumber,
-		"josh": "07833727919",
+		phoneNumber: name,
 	}
 
-	return a.storage.Create(newMap)
+	return a.storage.Create("a", newMap)
 }
 
 func (a *App) GetName(number string) (string, error) {
 	var name string
 
-	result, err := a.storage.Read()
+	result, err := a.storage.Read("a")
+
 	if err != nil {
 		return "", fmt.Errorf("an error occurred reading %w", err)
 	}
 
-	for value, key := range result {
+	for key, value := range result {
 		if key == number {
 			name = value
 		}
@@ -47,32 +49,10 @@ func (a *App) GetName(number string) (string, error) {
 	return name, nil
 }
 
-func (a *App) UpdatePhoneNumber(name, phoneNumber string) error {
+func (a *App) UpdateName(name, phoneNumber string) error {
 	updatedName := models.DataObject{
-		name: phoneNumber,
+		phoneNumber: name,
 	}
 
-	return a.storage.Update(updatedName)
-}
-
-func NewApp(storage IDatabase) *App {
-	return &App{storage: storage}
-}
-
-func (a *App) GetAllPhoneNumbers() ([]string, error) {
-	var contacts []string
-
-	result, err := a.storage.Read()
-	if err != nil {
-		return nil, fmt.Errorf("an error occurred reading %w", err)
-	}
-
-	for value, key := range result {
-		contact := fmt.Sprintf("%v:%v", value, key)
-		contacts = append(contacts, contact)
-	}
-
-	log.Info("contacts here", contacts)
-
-	return contacts, nil
+	return a.storage.Update("a", updatedName)
 }
