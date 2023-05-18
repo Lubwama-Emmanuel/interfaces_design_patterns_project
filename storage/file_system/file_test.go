@@ -58,6 +58,12 @@ func TestFileSytem(t *testing.T) {
 			},
 			wantErr: assert.Error,
 		},
+		{
+			testName: "error",
+			filename: "",
+			args:     args{},
+			wantErr:  assert.Error,
+		},
 	}
 
 	for _, tc := range tests {
