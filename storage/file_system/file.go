@@ -3,6 +3,7 @@ package filesystem
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/Lubwama-Emmannuel/Interfaces/models"
@@ -19,11 +20,16 @@ type Contact struct {
 }
 
 func (db *FileSystemDatabase) Create(path string, data models.DataObject) error {
-	file, err := os.Create(db.filename)
+	// Open the file in append mode
+	file, err := os.OpenFile(db.filename, os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		return fmt.Errorf("an error occurred creating a file %w", err)
 	}
 	defer file.Close()
+
+	got, err := loadDataFromFile(db.filename)
+	fmt.Println("error", err)
+	fmt.Println("got", got)
 
 	// Write the data to the file
 	var contactName string
@@ -112,6 +118,34 @@ func (db *FileSystemDatabase) Update(path string, data models.DataObject) error 
 	}
 
 	return nil
+}
+
+func loadDataFromFile(filePath string) ([]Contact, error) {
+	// Check if file exists
+	_, err := os.Stat(filePath)
+	if os.IsNotExist(err) {
+		return []Contact{}, nil
+	}
+
+	// Read the JSON data from the file
+	fileData, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load data from file %w", err)
+	}
+
+	fmt.Println("fileData", string(fileData))
+
+	// Unamrshal the JSON data into a slice of Contact objects
+	var data []Contact
+
+	err = json.Unmarshal(fileData, &data)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshall data %w", err)
+	}
+
+	fmt.Println("data is", data)
+
+	return data, nil
 }
 
 func NewFileSytemDatabase(file string) *FileSystemDatabase {
