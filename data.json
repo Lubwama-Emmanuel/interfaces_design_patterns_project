@@ -1,32 +1,30 @@
 [
  {
-  "path": "a",
-  "phone": "0706039119",
-  "name": "Rex"
+  "phone": "0704660968",
+  "name": "Emmanuel Rex"
  },
  {
-  "path": "a",
   "phone": "1234567890",
   "name": "Uncle Drizzy"
  },
  {
-  "path": "a",
-  "phone": "1234567890",
-  "name": "testName"
+  "phone": "625487469",
+  "name": "rex"
  },
  {
-  "path": "a",
-  "phone": "1234567890",
-  "name": "testName"
+  "phone": "0987654321",
+  "name": "name"
  },
  {
-  "path": "a",
   "phone": "1234567890",
-  "name": "testName"
+  "name": "testname"
  },
  {
-  "path": "a",
-  "phone": "1234567890",
-  "name": "testName"
+  "phone": "625487469",
+  "name": "rex"
+ },
+ {
+  "phone": "0987654321",
+  "name": "name"
  }
 ]

@@ -33,11 +33,11 @@ func TestApp(t *testing.T) {
 		{
 			testName: "success",
 			prepare: func(t *testing.T, f *fields) {
-				f.storage.EXPECT().Create("a", models.DataObject{"0704660968": "Emmanuel"}).Return(nil)
+				f.storage.EXPECT().Create(models.DataObject{"0704660968": "Emmanuel"}).Return(nil)
 
-				f.storage.EXPECT().Read("a").Return(models.DataObject{"0704660968": "Emmanuel"}, nil)
+				f.storage.EXPECT().Read("0704660968").Return(models.DataObject{"0704660968": "Emmanuel"}, nil)
 
-				f.storage.EXPECT().Update("a", models.DataObject{"Emmanuel": "0704660968"}).Return(nil).AnyTimes()
+				f.storage.EXPECT().Update(models.DataObject{"Emmanuel": "0704660968"}).Return(nil).AnyTimes()
 
 				f.storage.EXPECT().Delete("0704660968").Return(nil).AnyTimes()
 
@@ -54,11 +54,11 @@ func TestApp(t *testing.T) {
 		{
 			testName: "error",
 			prepare: func(t *testing.T, f *fields) {
-				f.storage.EXPECT().Create(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				f.storage.EXPECT().Create(gomock.Any()).Return(assert.AnError)
 
 				f.storage.EXPECT().Read(gomock.Any()).Return(models.DataObject{}, assert.AnError)
 
-				f.storage.EXPECT().Update(gomock.Any(), gomock.Any()).Return(assert.AnError)
+				f.storage.EXPECT().Update(gomock.Any()).Return(assert.AnError)
 
 				f.storage.EXPECT().Delete(gomock.Any()).Return(assert.AnError)
 

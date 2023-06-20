@@ -17,7 +17,7 @@ func TestFileSytem(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		path string
+		number string
 		data models.DataObject
 	}
 
@@ -40,7 +40,7 @@ func TestFileSytem(t *testing.T) {
 			testName: "success",
 			filename: file.Name(),
 			args: args{
-				path: "a",
+				number: "0706039119",
 				data: models.DataObject{
 					"0706039119": "Lubwama",
 				},
@@ -51,7 +51,7 @@ func TestFileSytem(t *testing.T) {
 			testName: "error",
 			filename: "",
 			args: args{
-				path: "a",
+				number: "a",
 				data: models.DataObject{
 					"0706039119": "Lubwama",
 				},
@@ -73,7 +73,7 @@ func TestFileSytem(t *testing.T) {
 
 			fileDB := filesystem.NewFileSytemDatabase(tc.filename)
 
-			err = fileDB.Create(tc.args.path, tc.args.data)
+			err = fileDB.Create(tc.args.data)
 			if err != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
 				return
@@ -85,7 +85,7 @@ func TestFileSytem(t *testing.T) {
 				return
 			}
 
-			updateErr := fileDB.Update(tc.args.path, tc.args.data)
+			updateErr := fileDB.Update(tc.args.data)
 			if updateErr != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, updateErr))
 				return

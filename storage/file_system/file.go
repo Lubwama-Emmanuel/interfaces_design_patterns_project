@@ -14,12 +14,11 @@ type FileSystemDatabase struct { //nolint:revive
 }
 
 type Contact struct {
-	Path  string `json:"path"`
 	Phone string `json:"phone"`
 	Name  string `json:"name"`
 }
 
-func (db *FileSystemDatabase) Create(path string, data models.DataObject) error {
+func (db *FileSystemDatabase) Create(data models.DataObject) error {
 	var fileData []Contact
 
 	// reading existing data
@@ -40,7 +39,6 @@ func (db *FileSystemDatabase) Create(path string, data models.DataObject) error 
 	}
 
 	contact := Contact{
-		Path:  path,
 		Phone: contactPhone,
 		Name:  contactName,
 	}
@@ -72,7 +70,7 @@ func (db *FileSystemDatabase) Read(number string) (models.DataObject, error) {
 	return models.DataObject{}, nil
 }
 
-func (db *FileSystemDatabase) Update(path string, newData models.DataObject) error {
+func (db *FileSystemDatabase) Update(newData models.DataObject) error {
 	var phoneNumber string
 	var newName string
 
@@ -102,14 +100,14 @@ func (db *FileSystemDatabase) Update(path string, newData models.DataObject) err
 }
 
 // Delete function to be implemented here.
-func (db *FileSystemDatabase) Delete(path string) error {
+func (db *FileSystemDatabase) Delete(number string) error {
 	data, err := loadDataFromFile(db.filename)
 	if err != nil {
 		return fmt.Errorf("an error occurred decoding to json %w", err)
 	}
 
 	for i, obj := range data {
-		if obj.Phone == path { 
+		if obj.Phone == number { 
 			data = append(data[:i], data[i + 1:]...)
 			break
 		}
@@ -151,7 +149,7 @@ func loadDataFromFile(filePath string) ([]Contact, error) {
 	// Read the JSON data from the file
 	fileData, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to load data from file %w", err)
+		return []Contact{}, fmt.Errorf("failed to load data from file %w", err)
 	}
 
 	// Unamrshal the JSON data into a slice of Contact objects

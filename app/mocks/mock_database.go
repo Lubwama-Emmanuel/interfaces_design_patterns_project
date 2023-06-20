@@ -35,17 +35,17 @@ func (m *MockIDatabase) EXPECT() *MockIDatabaseMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockIDatabase) Create(arg0 string, arg1 models.DataObject) error {
+func (m *MockIDatabase) Create(arg0 models.DataObject) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+	ret := m.ctrl.Call(m, "Create", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockIDatabaseMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockIDatabaseMockRecorder) Create(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockIDatabase)(nil).Create), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockIDatabase)(nil).Create), arg0)
 }
 
 // Delete mocks base method.
@@ -93,15 +93,15 @@ func (mr *MockIDatabaseMockRecorder) ReadAll() *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockIDatabase) Update(arg0 string, arg1 models.DataObject) error {
+func (m *MockIDatabase) Update(arg0 models.DataObject) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", arg0, arg1)
+	ret := m.ctrl.Call(m, "Update", arg0)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockIDatabaseMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockIDatabaseMockRecorder) Update(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockIDatabase)(nil).Update), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockIDatabase)(nil).Update), arg0)
 }

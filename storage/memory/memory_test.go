@@ -13,7 +13,7 @@ func TestMemory(t *testing.T) {
 	t.Parallel()
 
 	type args struct {
-		path string
+		number string
 		data models.DataObject
 	}
 
@@ -25,7 +25,7 @@ func TestMemory(t *testing.T) {
 		{
 			testName: "Success",
 			args: args{
-				path: "a",
+				number: "0706039119",
 				data: models.DataObject{
 					"0706039119": "Emmanuel",
 				},
@@ -35,10 +35,8 @@ func TestMemory(t *testing.T) {
 		{
 			testName: "Error",
 			args: args{
-				path: "2",
-				data: models.DataObject{
-					"0706039119": "Emmanuel",
-				},
+				number: "2",
+				data: models.DataObject{},
 			},
 			wantErr: assert.Error,
 		},
@@ -51,13 +49,13 @@ func TestMemory(t *testing.T) {
 
 			memoryDB := memory.NewMemoryStorage()
 
-			createErr := memoryDB.Create(tc.args.path, tc.args.data)
+			createErr := memoryDB.Create(tc.args.data)
 			if createErr != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, createErr))
 				return
 			}
 
-			data, readErr := memoryDB.Read(tc.args.path)
+			data, readErr := memoryDB.Read(tc.args.number)
 			if readErr != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, readErr))
 				return
@@ -70,9 +68,21 @@ func TestMemory(t *testing.T) {
 			updateData := models.DataObject{
 				"0706039119": "Lubwama",
 			}
-			updateErr := memoryDB.Update(tc.args.path, updateData)
+			updateErr := memoryDB.Update(updateData)
 			if updateErr != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, updateErr))
+				return
+			}
+
+			deleteErr := memoryDB.Delete(tc.args.number)
+			if deleteErr != nil && tc.wantErr == nil {
+				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, deleteErr))
+				return
+			}
+
+			_, readAllErr := memoryDB.ReadAll()
+			if readAllErr != nil && tc.wantErr == nil {
+				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, readAllErr))
 				return
 			}
 		})
