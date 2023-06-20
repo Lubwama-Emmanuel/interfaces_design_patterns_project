@@ -10,9 +10,9 @@ import (
 type IDatabase interface {
 	Create(path string, data models.DataObject) error
 	Read(path string) (models.DataObject, error)
-	// ReadAll() (models.DataObject, error)
+	ReadAll() ([]models.DataObject, error)
 	Update(path string, data models.DataObject) error
-	// Delete(path string) error
+	Delete(path string) error
 }
 
 type App struct {
@@ -38,7 +38,7 @@ func (a *App) SavePhoneNumber(name, phoneNumber string) error {
 func (a *App) GetName(number string) (string, error) {
 	var name string
 
-	result, err := a.storage.Read("a")
+	result, err := a.storage.Read(number)
 	if err != nil {
 		return "", fmt.Errorf("an error occurred reading %w", err)
 	}
@@ -52,7 +52,7 @@ func (a *App) GetName(number string) (string, error) {
 	return name, nil
 }
 
-func (a *App) UpdateName(name, phoneNumber string) error {
+func (a *App) UpdateName(phoneNumber, name string) error {
 	updatedName := map[string]string{
 		phoneNumber: name,
 	}
@@ -62,4 +62,30 @@ func (a *App) UpdateName(name, phoneNumber string) error {
 	}
 
 	return nil
+}
+
+func (a *App) DeleteContact(phoneNumber string) error {
+	err := a.storage.Delete(phoneNumber)
+	if err != nil {
+		return fmt.Errorf("an error occurred reading %w", err)
+	}
+
+	return nil
+}
+
+func (a *App) GetAllPhoneNumbers() ([]string, error) {
+	data, err := a.storage.ReadAll()
+	if err != nil {
+		return nil, fmt.Errorf("an error occurred reading %w", err)
+	}
+
+	var phoneNumbers []string
+
+	for _, contact := range data {
+		for phoneNumber := range contact {
+			phoneNumbers = append(phoneNumbers, phoneNumber)
+		}
+	}
+
+	return phoneNumbers, nil
 }
