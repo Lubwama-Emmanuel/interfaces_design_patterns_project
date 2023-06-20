@@ -20,16 +20,15 @@ type Contact struct {
 }
 
 func (db *FileSystemDatabase) Create(path string, data models.DataObject) error {
-	// Open the file in append mode
-	file, err := os.OpenFile(db.filename, os.O_WRONLY|os.O_APPEND, 0644)
-	if err != nil {
-		return fmt.Errorf("an error occurred creating a file %w", err)
-	}
-	defer file.Close()
+	var fileData []Contact
 
-	got, err := loadDataFromFile(db.filename)
-	fmt.Println("error", err)
-	fmt.Println("got", got)
+	// reading existing data
+	existingData, err := loadDataFromFile(db.filename)
+	if err != nil {
+		return fmt.Errorf("an error occurred decoding to json %w", err)
+	}
+
+	fileData = append(fileData, existingData...)
 
 	// Write the data to the file
 	var contactName string
@@ -46,78 +45,100 @@ func (db *FileSystemDatabase) Create(path string, data models.DataObject) error 
 		Name:  contactName,
 	}
 
-	// Encode Data to JSON
-	jsonData, err := json.MarshalIndent(contact, "", " ")
-	if err != nil {
-		return fmt.Errorf("an error occurred during json encoding %w", err)
-	}
+	fileData = append(fileData, contact)
 
-	_, err = file.Write(jsonData)
+	err = saveDataToFile(fileData, db.filename)
 	if err != nil {
-		return fmt.Errorf("an error occurred writing data %w", err)
+		return fmt.Errorf("an error occurred %w", err)
 	}
 
 	return nil
 }
 
-func (db *FileSystemDatabase) Read(path string) (models.DataObject, error) {
-	file, openErr := os.Open(db.filename)
-	if openErr != nil {
-		return models.DataObject{}, fmt.Errorf("an error occurred read contact from file %w", openErr)
-	}
-
-	defer file.Close()
-
-	var contact Contact
-
-	err := json.NewDecoder(file).Decode(&contact)
+func (db *FileSystemDatabase) Read(number string) (models.DataObject, error) {
+	data, err := loadDataFromFile(db.filename)
 	if err != nil {
 		return models.DataObject{}, fmt.Errorf("an error occurred decoding to json %w", err)
 	}
 
-	if contact.Path == path {
-		return models.DataObject{
-			contact.Phone: contact.Name,
-		}, nil
+	for _, value := range data {
+		if number == value.Phone {
+			return models.DataObject{
+				value.Phone: value.Name,
+			}, nil
+		}
 	}
 
 	return models.DataObject{}, nil
 }
 
-func (db *FileSystemDatabase) Update(path string, data models.DataObject) error {
-	file, openErr := os.Open(db.filename)
-	if openErr != nil {
-		return fmt.Errorf("an error occurred read contact from file %w", openErr)
+func (db *FileSystemDatabase) Update(path string, newData models.DataObject) error {
+	var phoneNumber string
+	var newName string
+
+	for key, value := range newData {
+		phoneNumber = key
+		newName = value
 	}
 
-	defer file.Close()
-
-	var contact Contact
-
-	err := json.NewDecoder(file).Decode(&contact)
+	data, err := loadDataFromFile(db.filename)
 	if err != nil {
 		return fmt.Errorf("an error occurred decoding to json %w", err)
 	}
 
-	if path == contact.Path {
-		for key, value := range data {
-			if key == contact.Phone {
-				contact.Name = value
-			}
-		}
-
-		updatedContact, err := json.MarshalIndent(&contact, "", " ")
-		if err != nil {
-			return fmt.Errorf("an error occurred during json encoding %w", err)
-		}
-
-		writeErr := os.WriteFile(db.filename, updatedContact, 0o644) //nolint:gosec
-		if err != nil {
-			return fmt.Errorf("an error occurred updating data %w", writeErr)
+	for i := range data {
+		if data[i].Phone == phoneNumber {
+			data[i].Name = newName
+			break
 		}
 	}
 
+	err = saveDataToFile(data, db.filename)
+	if err != nil {
+		return fmt.Errorf("an error occurred %w", err)
+	}
+
 	return nil
+}
+
+// Delete function to be implemented here.
+func (db *FileSystemDatabase) Delete(path string) error {
+	data, err := loadDataFromFile(db.filename)
+	if err != nil {
+		return fmt.Errorf("an error occurred decoding to json %w", err)
+	}
+
+	for i, obj := range data {
+		if obj.Phone == path { 
+			data = append(data[:i], data[i + 1:]...)
+			break
+		}
+	}
+
+	err = saveDataToFile(data, db.filename)
+	if err != nil {
+		return fmt.Errorf("an error occurred %w", err)
+	}
+
+	return nil
+}
+
+func (db *FileSystemDatabase) ReadAll() ([]models.DataObject, error) {
+	data, err := loadDataFromFile(db.filename)
+	if err != nil {
+		return []models.DataObject{}, fmt.Errorf("an error occurred decoding to json %w", err)
+	}
+
+	var contacts []models.DataObject
+
+	for _, obj := range data {
+		contact := models.DataObject{
+			obj.Phone: obj.Name,
+		}
+		contacts = append(contacts, contact)
+	}
+
+	return contacts, nil
 }
 
 func loadDataFromFile(filePath string) ([]Contact, error) {
@@ -133,19 +154,33 @@ func loadDataFromFile(filePath string) ([]Contact, error) {
 		return nil, fmt.Errorf("failed to load data from file %w", err)
 	}
 
-	fmt.Println("fileData", string(fileData))
-
 	// Unamrshal the JSON data into a slice of Contact objects
 	var data []Contact
+
+	// err = json.NewDecoder(fileData).Decode(&data)
 
 	err = json.Unmarshal(fileData, &data)
 	if err != nil {
 		return nil, fmt.Errorf("failed to unmarshall data %w", err)
 	}
 
-	fmt.Println("data is", data)
-
 	return data, nil
+}
+
+func saveDataToFile(data []Contact, filePath string) error {
+	// Convert the data to JSON format
+	jsonData, err := json.MarshalIndent(data, "", " ")
+	if err != nil {
+		return fmt.Errorf("failed to convert data to json %w", err)
+	}
+
+	// Write the JSON data to file
+	err = ioutil.WriteFile(filePath, jsonData, 0644)
+	if err != nil {
+		return fmt.Errorf("failed to write to file %w", err)
+	}
+
+	return nil
 }
 
 func NewFileSytemDatabase(file string) *FileSystemDatabase {
