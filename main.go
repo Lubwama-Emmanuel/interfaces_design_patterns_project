@@ -13,14 +13,14 @@ func main() {
 
 	db := app.NewApp(storage)
 
-	name := "Emmanuel"
-	phone := "0706039119"
+	// name := "testName"
+	phone := "1234567890"
 
-	// Create a new record
-	err := db.SavePhoneNumber(name, phone)
-	if err != nil {
-		log.Error("an error occurred creating file", err)
-	}
+	// // Create a new record
+	// err := db.SavePhoneNumber(name, phone)
+	// if err != nil {
+	// 	log.Error("an error occurred creating file", err)
+	// }
 
 	// Read created record
 	data, err := db.GetName(phone)
@@ -31,18 +31,29 @@ func main() {
 	log.Info("saved data is: ", data)
 
 	// Update the record
-	updateName := "Lubwama"
 
-	err = db.UpdateName(updateName, phone)
+	// updateErr := db.UpdateName("1234567890", "Uncle Drizzy" )
+	// if updateErr != nil {
+	// 	log.Error("an error occurred reading updating file", updateErr)
+	// }
+
+	// // Read the updated record
+	// updatedData, err := db.GetName(phone)
+	// if err != nil {
+	// 	log.Error("an error occurred reading updated file", err)
+	// }
+
+	// log.Info("updated data is: ", updatedData)
+
+	// deleteErr := db.DeleteContact("0706039111")
+	// if deleteErr != nil {
+	// 	log.Error("an error occurred reading updated file", deleteErr)
+	// }
+
+	phoneNumbers, err := db.GetAllPhoneNumbers()
 	if err != nil {
-		log.Error("an error occurred reading updating file", err)
+		log.Error("an error occurred getting all numbers", err)
 	}
 
-	// Read the updated record
-	updatedData, err := db.GetName(phone)
-	if err != nil {
-		log.Error("an error occurred reading updated file", err)
-	}
-
-	log.Info("updated data is: ", updatedData)
+	log.Info("numbers", phoneNumbers)
 }
