@@ -79,7 +79,7 @@ func TestFileSytem(t *testing.T) {
 				return
 			}
 
-			_, readErr := fileDB.Read(tc.args.path)
+			_, readErr := fileDB.Read("1234567890")
 			if readErr != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, readErr))
 				return
@@ -88,6 +88,18 @@ func TestFileSytem(t *testing.T) {
 			updateErr := fileDB.Update(tc.args.path, tc.args.data)
 			if updateErr != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, updateErr))
+				return
+			}
+
+			deleteErr := fileDB.Delete("1234567890")
+			if deleteErr != nil && tc.wantErr == nil {
+				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, deleteErr))
+				return
+			}
+
+			_, readAllErr := fileDB.ReadAll()
+			if readAllErr != nil && tc.wantErr == nil {
+				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, readAllErr))
 				return
 			}
 		})
