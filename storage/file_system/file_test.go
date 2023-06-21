@@ -1,4 +1,4 @@
-//nolint:staticcheck
+//nolint:(gocognit)
 package filesystem_test
 
 import (
@@ -9,11 +9,11 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Lubwama-Emmannuel/Interfaces/models"
-	filesystem "github.com/Lubwama-Emmannuel/Interfaces/storage/file_system"
+	"github.com/Lubwama-Emmanuel/Interfaces/models"
+	filesystem "github.com/Lubwama-Emmanuel/Interfaces/storage/file_system"
 )
 
-func TestFileSytem(t *testing.T) {
+func TestFileSytem(t *testing.T) { //nolint:(gocognit)
 	t.Parallel()
 
 	type args struct {
@@ -79,7 +79,7 @@ func TestFileSytem(t *testing.T) {
 				return
 			}
 
-			_, readErr := fileDB.Read("1234567890")
+			_, readErr := fileDB.Read(tc.args.number)
 			if readErr != nil && tc.wantErr == nil {
 				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, readErr))
 				return

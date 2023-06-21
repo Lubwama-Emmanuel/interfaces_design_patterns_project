@@ -1,9 +1,9 @@
 package memory
 
 import (
-	"fmt"
+	"errors"
 
-	"github.com/Lubwama-Emmannuel/Interfaces/models"
+	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
 
 type MemoryDatabase struct { //nolint:revive
@@ -17,15 +17,15 @@ func (db *MemoryDatabase) Create(data models.DataObject) error {
 }
 
 func (db MemoryDatabase) Read(number string) (models.DataObject, error) {
-
 	var data models.DataObject
-	
+
 	for _, value := range db.data {
 		for phoneNumber, phoneName := range value {
-			if phoneNumber == number { 
+			if phoneNumber == number {
 				data = models.DataObject{
 					phoneNumber: phoneName,
 				}
+
 				return data, nil
 			}
 		}
@@ -44,7 +44,7 @@ func (db *MemoryDatabase) Update(data models.DataObject) error {
 	}
 
 	for _, key := range db.data {
-		for phoneNumber, _ := range key {
+		for phoneNumber := range key {
 			if phoneNumber == phone {
 				key[phoneNumber] = newName
 				return nil
@@ -52,19 +52,18 @@ func (db *MemoryDatabase) Update(data models.DataObject) error {
 		}
 	}
 
-	return fmt.Errorf("number not saved")
+	return errors.New("number not found")
 }
 
 func (db *MemoryDatabase) Delete(number string) error {
 	for i, obj := range db.data {
-		for phoneNumber, _ := range obj {
+		for phoneNumber := range obj {
 			if phoneNumber == number {
-				db.data = append(db.data[:i], db.data[i + 1:]... )
-
+				db.data = append(db.data[:i], db.data[i+1:]...)
 			}
 		}
-		fmt.Println(i, obj)
 	}
+
 	return nil
 }
 

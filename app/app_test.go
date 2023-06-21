@@ -7,9 +7,9 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/Lubwama-Emmannuel/Interfaces/app"
-	"github.com/Lubwama-Emmannuel/Interfaces/app/mocks"
-	"github.com/Lubwama-Emmannuel/Interfaces/models"
+	"github.com/Lubwama-Emmanuel/Interfaces/app"
+	"github.com/Lubwama-Emmanuel/Interfaces/app/mocks"
+	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
 
 func TestApp(t *testing.T) {

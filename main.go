@@ -3,13 +3,13 @@ package main
 import (
 	log "github.com/sirupsen/logrus"
 
-	"github.com/Lubwama-Emmannuel/Interfaces/app"
-	filesystem "github.com/Lubwama-Emmannuel/Interfaces/storage/file_system"
+	"github.com/Lubwama-Emmanuel/Interfaces/app"
+	"github.com/Lubwama-Emmanuel/Interfaces/storage/memory"
 )
 
 func main() {
-	// storage := memory.NewMemoryStorage()
-	storage := filesystem.NewFileSytemDatabase("data.json")
+	storage := memory.NewMemoryStorage()
+	// storage := filesystem.NewFileSytemDatabase("data.json")
 
 	db := app.NewApp(storage)
 
@@ -42,7 +42,7 @@ func main() {
 
 	// Update the record
 
-	updateErr := db.UpdateName("1234567890", "Uncle Drizzy" )
+	updateErr := db.UpdateName("1234567890", "Uncle Drizzy")
 	if updateErr != nil {
 		log.Error("an error occurred reading updating file: ", updateErr)
 	}

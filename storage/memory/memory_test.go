@@ -4,17 +4,19 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Lubwama-Emmannuel/Interfaces/models"
-	"github.com/Lubwama-Emmannuel/Interfaces/storage/memory"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/Lubwama-Emmanuel/Interfaces/models"
+	"github.com/Lubwama-Emmanuel/Interfaces/storage/memory"
+	"github.com/Lubwama-Emmanuel/Interfaces/utils"
 )
 
-func TestMemory(t *testing.T) {
+func TestMemory(t *testing.T) { //nolint:(gocognit)
 	t.Parallel()
 
 	type args struct {
 		number string
-		data models.DataObject
+		data   models.DataObject
 	}
 
 	tests := []struct {
@@ -36,7 +38,7 @@ func TestMemory(t *testing.T) {
 			testName: "Error",
 			args: args{
 				number: "2",
-				data: models.DataObject{},
+				data:   models.DataObject{},
 			},
 			wantErr: assert.Error,
 		},
@@ -61,7 +63,7 @@ func TestMemory(t *testing.T) {
 				return
 			}
 
-			if !compareMaps(data, tc.args.data) {
+			if !utils.CompareMaps(data, tc.args.data) {
 				assert.Fail(t, fmt.Sprintf("Test %v data received %v yet expected %v", tc.testName, tc.args.data, data))
 			}
 
@@ -87,22 +89,4 @@ func TestMemory(t *testing.T) {
 			}
 		})
 	}
-}
-
-func compareMaps(map1, map2 map[string]string) bool {
-	if len(map1) != len(map2) {
-		return false
-	}
-
-	for key, value1 := range map1 {
-		if value2, ok := map2[key]; ok {
-			if value1 != value2 {
-				return false
-			}
-		} else {
-			return false
-		}
-	}
-
-	return true
 }

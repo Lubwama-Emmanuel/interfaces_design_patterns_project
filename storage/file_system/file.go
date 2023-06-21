@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/Lubwama-Emmannuel/Interfaces/models"
+	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
 
 type FileSystemDatabase struct { //nolint:revive
@@ -107,8 +107,8 @@ func (db *FileSystemDatabase) Delete(number string) error {
 	}
 
 	for i, obj := range data {
-		if obj.Phone == number { 
-			data = append(data[:i], data[i + 1:]...)
+		if obj.Phone == number {
+			data = append(data[:i], data[i+1:]...)
 			break
 		}
 	}
@@ -127,16 +127,16 @@ func (db *FileSystemDatabase) ReadAll() ([]models.DataObject, error) {
 		return []models.DataObject{}, fmt.Errorf("an error occurred decoding to json %w", err)
 	}
 
-	var contacts []models.DataObject
+	var numbers []models.DataObject
 
 	for _, obj := range data {
 		contact := models.DataObject{
 			obj.Phone: obj.Name,
 		}
-		contacts = append(contacts, contact)
+		numbers = append(numbers, contact)
 	}
 
-	return contacts, nil
+	return numbers, nil
 }
 
 func loadDataFromFile(filePath string) ([]Contact, error) {
@@ -173,7 +173,7 @@ func saveDataToFile(data []Contact, filePath string) error {
 	}
 
 	// Write the JSON data to file
-	err = ioutil.WriteFile(filePath, jsonData, 0644)
+	err = ioutil.WriteFile(filePath, jsonData, 0o644)
 	if err != nil {
 		return fmt.Errorf("failed to write to file %w", err)
 	}

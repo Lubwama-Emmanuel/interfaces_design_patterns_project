@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 
-	"github.com/Lubwama-Emmannuel/Interfaces/models"
+	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
 
 //go:generate mockgen -destination=mocks/mock_database.go -package=mocks . IDatabase
