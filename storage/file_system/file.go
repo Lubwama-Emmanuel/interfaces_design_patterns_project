@@ -2,6 +2,7 @@ package filesystem
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -87,16 +88,15 @@ func (db *FileSystemDatabase) Update(newData models.DataObject) error {
 	for i := range data {
 		if data[i].Phone == phoneNumber {
 			data[i].Name = newName
-			break
+			err = saveDataToFile(data, db.filename)
+			if err != nil {
+				return fmt.Errorf("an error occurred %w", err)
+			}
+			return nil
 		}
 	}
 
-	err = saveDataToFile(data, db.filename)
-	if err != nil {
-		return fmt.Errorf("an error occurred %w", err)
-	}
-
-	return nil
+	return errors.New("number not found")
 }
 
 // Delete function to be implemented here.
