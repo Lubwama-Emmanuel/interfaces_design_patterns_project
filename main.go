@@ -4,6 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
+	// filesystem "github.com/Lubwama-Emmanuel/Interfaces/storage/file_system"
 	"github.com/Lubwama-Emmanuel/Interfaces/storage/memory"
 )
 
@@ -17,17 +18,7 @@ func main() {
 	// phone := "1234567890"
 
 	// Create a new record
-	err := db.SavePhoneNumber("testname", "1234567890")
-	if err != nil {
-		log.Error("an error occurred creating file: ", err)
-	}
-
-	err = db.SavePhoneNumber("rex", "625487469")
-	if err != nil {
-		log.Error("an error occurred creating file: ", err)
-	}
-
-	saveErr := db.SavePhoneNumber("name", "0987654321")
+	saveErr := db.SavePhoneNumber("Test Name", "1234567890")
 	if saveErr != nil {
 		log.Error("an error occurred creating file: ", saveErr)
 	}
