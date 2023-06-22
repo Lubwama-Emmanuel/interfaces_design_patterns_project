@@ -14,13 +14,13 @@ type FileSystemDatabase struct { //nolint:revive
 	filename string
 }
 
-type Contact struct {
+type contact struct {
 	Phone string `json:"phone"`
 	Name  string `json:"name"`
 }
 
 func (db *FileSystemDatabase) Create(data models.DataObject) error {
-	var fileData []Contact
+	var fileData []contact
 
 	// reading existing data
 	existingData, err := loadDataFromFile(db.filename)
@@ -39,12 +39,12 @@ func (db *FileSystemDatabase) Create(data models.DataObject) error {
 		contactName = value
 	}
 
-	contact := Contact{
+	newContact := contact{
 		Phone: contactPhone,
 		Name:  contactName,
 	}
 
-	fileData = append(fileData, contact)
+	fileData = append(fileData, newContact)
 
 	err = saveDataToFile(fileData, db.filename)
 	if err != nil {
@@ -88,10 +88,12 @@ func (db *FileSystemDatabase) Update(newData models.DataObject) error {
 	for i := range data {
 		if data[i].Phone == phoneNumber {
 			data[i].Name = newName
+
 			err = saveDataToFile(data, db.filename)
 			if err != nil {
 				return fmt.Errorf("an error occurred %w", err)
 			}
+
 			return nil
 		}
 	}
@@ -139,21 +141,21 @@ func (db *FileSystemDatabase) ReadAll() ([]models.DataObject, error) {
 	return numbers, nil
 }
 
-func loadDataFromFile(filePath string) ([]Contact, error) {
+func loadDataFromFile(filePath string) ([]contact, error) {
 	// Check if file exists
 	_, err := os.Stat(filePath)
-	if os.IsNotExist(err) {
-		return []Contact{}, nil
+	if err != nil {
+		return []contact{}, fmt.Errorf("an error checking if file exists %w", err)
 	}
 
 	// Read the JSON data from the file
 	fileData, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return []Contact{}, fmt.Errorf("failed to load data from file %w", err)
+		return []contact{}, fmt.Errorf("failed to load data from file %w", err)
 	}
 
-	// Unamrshal the JSON data into a slice of Contact objects
-	var data []Contact
+	// Unamrshal the JSON data into a slice of contact objects
+	var data []contact
 
 	// err = json.NewDecoder(fileData).Decode(&data)
 
@@ -165,7 +167,7 @@ func loadDataFromFile(filePath string) ([]Contact, error) {
 	return data, nil
 }
 
-func saveDataToFile(data []Contact, filePath string) error {
+func saveDataToFile(data []contact, filePath string) error {
 	// Convert the data to JSON format
 	jsonData, err := json.MarshalIndent(data, "", " ")
 	if err != nil {

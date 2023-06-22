@@ -12,17 +12,17 @@ import (
 	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
 
+type args struct {
+	name  string
+	phone string
+}
+
+type fields struct {
+	storage *mocks.MockIDatabase
+}
+
 func TestApp(t *testing.T) {
 	t.Parallel()
-
-	type args struct {
-		name  string
-		phone string
-	}
-
-	type fields struct {
-		storage *mocks.MockIDatabase
-	}
 
 	tests := []struct {
 		testName string
@@ -90,36 +90,45 @@ func TestApp(t *testing.T) {
 			}
 
 			appInstance := app.NewApp(f.storage)
-
-			err := appInstance.SavePhoneNumber(tc.args.name, tc.args.phone)
-			if err != nil && tc.wantErr == nil {
-				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
-				return
-			}
-
-			_, err = appInstance.GetName(tc.args.phone)
-			if err != nil && tc.wantErr == nil {
-				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
-				return
-			}
-
-			err = appInstance.UpdateName(tc.args.name, tc.args.phone)
-			if err != nil && tc.wantErr == nil {
-				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
-				return
-			}
-
-			err = appInstance.DeleteContact(tc.args.phone)
-			if err != nil && tc.wantErr == nil {
-				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
-				return
-			}
-
-			_, err =appInstance.GetAllPhoneNumbers()
-			if err != nil && tc.wantErr == nil {
-				assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
-				return
-			}
+			performAppTest(t, tc, appInstance)
 		})
+	}
+}
+
+func performAppTest(t *testing.T, tc struct {
+	testName string
+	prepare  func(t *testing.T, f *fields)
+	args     args
+	wantErr  assert.ErrorAssertionFunc
+}, appInstance *app.App,
+) {
+	err := appInstance.SavePhoneNumber(tc.args.name, tc.args.phone)
+	if err != nil && tc.wantErr == nil {
+		assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
+		return
+	}
+
+	_, err = appInstance.GetName(tc.args.phone)
+	if err != nil && tc.wantErr == nil {
+		assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
+		return
+	}
+
+	err = appInstance.UpdateName(tc.args.name, tc.args.phone)
+	if err != nil && tc.wantErr == nil {
+		assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
+		return
+	}
+
+	err = appInstance.DeleteContact(tc.args.phone)
+	if err != nil && tc.wantErr == nil {
+		assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
+		return
+	}
+
+	_, err = appInstance.GetAllPhoneNumbers()
+	if err != nil && tc.wantErr == nil {
+		assert.Fail(t, fmt.Sprintf("Test %v Error not expected but got one:\n"+"error: %q", tc.testName, err))
+		return
 	}
 }
