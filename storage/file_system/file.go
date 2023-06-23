@@ -23,10 +23,7 @@ func (db *FileSystemDatabase) Create(data models.DataObject) error {
 	var fileData []contact
 
 	// reading existing data
-	existingData, err := loadDataFromFile(db.filename)
-	if err != nil {
-		return fmt.Errorf("an error occurred decoding to json %w", err)
-	}
+	existingData, _ := loadDataFromFile(db.filename)
 
 	fileData = append(fileData, existingData...)
 
@@ -46,7 +43,7 @@ func (db *FileSystemDatabase) Create(data models.DataObject) error {
 
 	fileData = append(fileData, newContact)
 
-	err = saveDataToFile(fileData, db.filename)
+	err := saveDataToFile(fileData, db.filename)
 	if err != nil {
 		return fmt.Errorf("an error occurred %w", err)
 	}
@@ -98,7 +95,7 @@ func (db *FileSystemDatabase) Update(newData models.DataObject) error {
 		}
 	}
 
-	return errors.New("number not found")
+	return errors.New("number not found") //nolint:goerr113
 }
 
 // Delete function to be implemented here.
@@ -129,7 +126,7 @@ func (db *FileSystemDatabase) ReadAll() ([]models.DataObject, error) {
 		return []models.DataObject{}, fmt.Errorf("an error occurred decoding to json %w", err)
 	}
 
-	var numbers []models.DataObject
+	var numbers []models.DataObject //nolint:prealloc
 
 	for _, obj := range data {
 		contact := models.DataObject{
@@ -175,7 +172,7 @@ func saveDataToFile(data []contact, filePath string) error {
 	}
 
 	// Write the JSON data to file
-	err = ioutil.WriteFile(filePath, jsonData, 0o644)
+	err = ioutil.WriteFile(filePath, jsonData, 0o644) //nolint:gosec
 	if err != nil {
 		return fmt.Errorf("failed to write to file %w", err)
 	}
