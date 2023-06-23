@@ -52,7 +52,7 @@ func (db *MemoryDatabase) Update(data models.DataObject) error {
 		}
 	}
 
-	return errors.New("number not found")
+	return errors.New("number not found") //nolint:goerr113
 }
 
 func (db *MemoryDatabase) Delete(number string) error {
