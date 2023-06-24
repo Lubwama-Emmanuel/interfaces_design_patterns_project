@@ -4,12 +4,13 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
-	filesystem "github.com/Lubwama-Emmanuel/Interfaces/storage/file_system"
+	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
 )
 
 func main() {
 	// storage := memory.NewMemoryStorage()
-	storage := filesystem.NewFileSytemDatabase("data.json")
+	// storage := filesystem.NewFileSytemDatabase("data.json")
+	storage := mongodb.NewMongoDB("mongodb://localhost:27017")
 
 	db := app.NewApp(storage)
 
@@ -17,17 +18,17 @@ func main() {
 	// phone := "1234567890"
 
 	// Create a new record
-	saveErr := db.SavePhoneNumber("Test Name", "1234567890")
-	if saveErr != nil {
-		log.Error("an error occurred creating file: ", saveErr)
-	}
+	// saveErr := db.SavePhoneNumber("Gift Kirabo", "0706039119")
+	// if saveErr != nil {
+	// 	log.Error("an error occurred creating file: ", saveErr)
+	// }
 
 	// saveErr = db.SavePhoneNumber("Emmanuel", "0706039119")
 	// if saveErr != nil {
 	// 	log.Error("an error occurred creating file: ", saveErr)
 	// }
 
-	// // Read created record
+	// Read created record
 	// data, err := db.GetName("1234567890")
 	// if err != nil {
 	// 	log.Error("an error occurred reading created file: ", err)
@@ -42,7 +43,7 @@ func main() {
 	// 	log.Error("an error occurred reading updating file: ", updateErr)
 	// }
 
-	// Read the updated record
+	// // Read the updated record
 	// updatedData, err := db.GetName("1234567890")
 	// if err != nil {
 	// 	log.Error("an error occurred reading updated file: ", err)
