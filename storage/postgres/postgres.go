@@ -3,18 +3,19 @@ package postgres
 import (
 	"fmt"
 
-	"github.com/Lubwama-Emmanuel/Interfaces/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
 
-type PostgresBD struct {
+type PostgresDB struct { //nolint:revive
 	database string
 }
 
 type Contact struct {
 	// gorm.Model
-	Phone string
+	Phone string `gorm:"primaryKey"`
 	Name  string
 }
 
@@ -26,7 +27,7 @@ func openDB(database string) (*gorm.DB, error) {
 	// dbName := "phonebook"
 
 	// DB string
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, database)
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, database) //nolint:lll
 
 	// Open db
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
@@ -37,7 +38,7 @@ func openDB(database string) (*gorm.DB, error) {
 	return db, nil
 }
 
-func (db *PostgresBD) Create(data models.DataObject) error {
+func (db *PostgresDB) Create(data models.DataObject) error {
 	var contact Contact
 
 	for key, value := range data {
@@ -52,21 +53,20 @@ func (db *PostgresBD) Create(data models.DataObject) error {
 		return fmt.Errorf("failed to create contact %w", err)
 	}
 
-	DB.AutoMigrate(&contact)
-
 	DB.Create(&contact)
 
 	return nil
 }
 
-func (db *PostgresBD) Read(number string) (models.DataObject, error) {
+func (db *PostgresDB) Read(number string) (models.DataObject, error) {
 	var contact Contact
+
 	DB, err := openDB(db.database)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create contact %w", err)
 	}
 
-	DB.Where("phone=?", number).First(&contact)
+	DB.First(&contact, number)
 
 	result := models.DataObject{
 		contact.Phone: contact.Name,
@@ -75,7 +75,7 @@ func (db *PostgresBD) Read(number string) (models.DataObject, error) {
 	return result, nil
 }
 
-func (db *PostgresBD) Update(newData models.DataObject) error {
+func (db *PostgresDB) Update(newData models.DataObject) error {
 	var contact Contact
 	var phoneNumber string
 	var phoneName string
@@ -84,8 +84,6 @@ func (db *PostgresBD) Update(newData models.DataObject) error {
 		phoneNumber = key
 		phoneName = value
 	}
-
-	fmt.Println(phoneNumber)
 
 	DB, err := openDB(db.database)
 	if err != nil {
@@ -101,19 +99,22 @@ func (db *PostgresBD) Update(newData models.DataObject) error {
 	return nil
 }
 
-func (db *PostgresBD) Delete(number string) error {
+func (db *PostgresDB) Delete(number string) error {
 	var contact Contact
+
 	DB, err := openDB(db.database)
 	if err != nil {
 		return fmt.Errorf("failed to create contact %w", err)
 	}
 
-	DB.Where("phone=?", number).Delete(&contact)
+	DB.Delete(&contact, number)
+
 	return nil
 }
 
-func (db *PostgresBD) ReadAll() ([]models.DataObject, error) {
+func (db *PostgresDB) ReadAll() ([]models.DataObject, error) {
 	var contacts []Contact
+
 	DB, err := openDB(db.database)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create contact %w", err)
@@ -121,7 +122,7 @@ func (db *PostgresBD) ReadAll() ([]models.DataObject, error) {
 
 	DB.Find(&contacts)
 
-	var results []models.DataObject
+	var results []models.DataObject //nolint:prealloc
 
 	for _, value := range contacts {
 		finalResult := models.DataObject{
@@ -133,6 +134,6 @@ func (db *PostgresBD) ReadAll() ([]models.DataObject, error) {
 	return results, nil
 }
 
-func NewPostgresDB(database string) *PostgresBD {
-	return &PostgresBD{database}
+func NewPostgresDB(database string) *PostgresDB {
+	return &PostgresDB{database}
 }
