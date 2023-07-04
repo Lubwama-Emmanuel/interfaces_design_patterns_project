@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Lubwama-Emmanuel/Interfaces/models"
-	"github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
+	"gorm.io/driver/postgres"
+
+	"github.com/Lubwama-Emmanuel/Interfaces/models"
+	post "github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
 )
 
 type args struct {
@@ -16,15 +19,27 @@ type args struct {
 func TestPostgres(t *testing.T) {
 	t.Parallel()
 
+	mockDB, _, _ := sqlmock.New()
+	dialector := postgres.New(postgres.Config{
+		Conn:       mockDB,
+		DriverName: "postgres",
+	})
+
+	postgresDB := &post.PostgresDB{
+		Dialector: dialector,
+	}
+
+	errDB := post.NewPostgresDB("")
+
 	tests := []struct {
-		testName string
-		dbName   string
-		args     args
-		wantErr  assert.ErrorAssertionFunc
+		testName   string
+		postgresDB *post.PostgresDB
+		args       args
+		wantErr    assert.ErrorAssertionFunc
 	}{
 		{
-			testName: "success",
-			dbName:   "testdb",
+			testName:   "success",
+			postgresDB: postgresDB,
 			args: args{
 				data: models.DataObject{
 					"0704660968": "Emmanuel",
@@ -33,11 +48,21 @@ func TestPostgres(t *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
-			testName: "success",
-			dbName:   "",
+			testName:   "success",
+			postgresDB: postgresDB,
 			args: args{
 				data: models.DataObject{
-					"0706039119": "Rex",
+					"0706039119": "Lubwama",
+				},
+			},
+			wantErr: assert.NoError,
+		},
+		{
+			testName:   "err database",
+			postgresDB: errDB,
+			args: args{
+				data: models.DataObject{
+					"": "",
 				},
 			},
 			wantErr: assert.Error,
@@ -49,19 +74,17 @@ func TestPostgres(t *testing.T) {
 		t.Run(tc.testName, func(t *testing.T) {
 			t.Parallel()
 
-			postgresDB := postgres.NewPostgresDB(tc.dbName)
-
-			performPostgresTest(t, tc, postgresDB)
+			performPostgresTest(t, tc, tc.postgresDB)
 		})
 	}
 }
 
 func performPostgresTest(t *testing.T, tc struct {
-	testName string
-	dbName   string
-	args     args
-	wantErr  assert.ErrorAssertionFunc
-}, postgresDB *postgres.PostgresDB,
+	testName   string
+	postgresDB *post.PostgresDB
+	args       args
+	wantErr    assert.ErrorAssertionFunc
+}, postgresDB *post.PostgresDB,
 ) {
 	createErr := postgresDB.Create(tc.args.data)
 	if createErr != nil && tc.wantErr == nil {

@@ -19,7 +19,7 @@ func main() {
 	// phone := "1234567890"
 
 	// Create a new record
-	saveErr := db.SavePhoneNumber("Gift Kirabo", "0706039119")
+	saveErr := db.SavePhoneNumber("Gift", "07047286821")
 	if saveErr != nil {
 		log.Error("an error occurred creating file: ", saveErr)
 	}
