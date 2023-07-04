@@ -37,7 +37,7 @@ func openDB(url string) *mongo.Client {
 		return nil
 	}
 
-	log.Info("----DATABASE CONNECT SUCCESSFULLY")
+	log.Info("----DATABASE CONNECTED SUCCESSFULLY")
 
 	return client
 }

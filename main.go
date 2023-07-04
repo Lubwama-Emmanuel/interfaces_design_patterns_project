@@ -4,13 +4,14 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
-	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
+	"github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
 )
 
 func main() {
 	// storage := memory.NewMemoryStorage()
 	// storage := filesystem.NewFileSytemDatabase("data.json")
-	storage := mongodb.NewMongoDB("mongodb://localhost:27017")
+	// storage := mongodb.NewMongoDB("mongodb://localhost:27017")
+	storage := postgres.NewPostgresDB("phonebook")
 
 	db := app.NewApp(storage)
 
@@ -29,34 +30,34 @@ func main() {
 	// }
 
 	// Read created record
-	// data, err := db.GetName("1234567890")
+	// data, err := db.GetName("0706039119")
 	// if err != nil {
 	// 	log.Error("an error occurred reading created file: ", err)
 	// }
 
 	// log.Info("saved data is: ", data)
 
-	// // Update the record
+	// Update the record
 
-	// updateErr := db.UpdateName("1234567890", "Uncle Drizzy")
+	// updateErr := db.UpdateName("0706039119", "Uncle Drizzy")
 	// if updateErr != nil {
 	// 	log.Error("an error occurred reading updating file: ", updateErr)
 	// }
 
 	// // Read the updated record
-	// updatedData, err := db.GetName("1234567890")
+	// updatedData, err := db.GetName("0706039119")
 	// if err != nil {
 	// 	log.Error("an error occurred reading updated file: ", err)
 	// }
 
 	// log.Info("updated data is: ", updatedData)
 
-	// deleteErr := db.DeleteContact("1234567890")
-	// if deleteErr != nil {
-	// 	log.Error("an error occurred reading updated file", deleteErr)
-	// }
+	deleteErr := db.DeleteContact("0706039119")
+	if deleteErr != nil {
+		log.Error("an error occurred reading updated file", deleteErr)
+	}
 
-	// // db.DeleteContact("1234567890")
+	// db.DeleteContact("1234567890")
 
 	phoneNumbers, err := db.GetAllPhoneNumbers()
 	if err != nil {
