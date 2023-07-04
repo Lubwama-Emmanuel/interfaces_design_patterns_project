@@ -19,23 +19,23 @@ func main() {
 	// phone := "1234567890"
 
 	// Create a new record
-	// saveErr := db.SavePhoneNumber("Gift Kirabo", "0706039119")
-	// if saveErr != nil {
-	// 	log.Error("an error occurred creating file: ", saveErr)
-	// }
+	saveErr := db.SavePhoneNumber("Gift Kirabo", "0706039119")
+	if saveErr != nil {
+		log.Error("an error occurred creating file: ", saveErr)
+	}
 
-	// saveErr = db.SavePhoneNumber("Emmanuel", "0706039119")
+	// saveErr := db.SavePhoneNumber("Emmanuel", "0782640437")
 	// if saveErr != nil {
 	// 	log.Error("an error occurred creating file: ", saveErr)
 	// }
 
 	// Read created record
-	// data, err := db.GetName("0706039119")
-	// if err != nil {
-	// 	log.Error("an error occurred reading created file: ", err)
-	// }
+	data, err := db.GetName("0706039119")
+	if err != nil {
+		log.Error("an error occurred reading created file: ", err)
+	}
 
-	// log.Info("saved data is: ", data)
+	log.Info("saved data is: ", data)
 
 	// Update the record
 
@@ -52,10 +52,10 @@ func main() {
 
 	// log.Info("updated data is: ", updatedData)
 
-	deleteErr := db.DeleteContact("0706039119")
-	if deleteErr != nil {
-		log.Error("an error occurred reading updated file", deleteErr)
-	}
+	// deleteErr := db.DeleteContact("0782640437")
+	// if deleteErr != nil {
+	// 	log.Error("an error occurred reading updated file", deleteErr)
+	// }
 
 	// db.DeleteContact("1234567890")
 
