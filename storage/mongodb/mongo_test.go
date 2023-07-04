@@ -19,17 +19,29 @@ func TestMongo(t *testing.T) {
 
 	tests := []struct {
 		testName string
+		dbURL    string
 		args     args
 		wantErr  assert.ErrorAssertionFunc
 	}{
 		{
 			testName: "success",
+			dbURL:    "mongodb+srv://lubwamaemmanuel1:tfOkFBHXNTZHtJPq@cluster0.qubflio.mongodb.net/?retryWrites=true&w=majority", //nolint:lll
 			args: args{
 				data: models.DataObject{
 					"0704660968": "Emmanuel",
 				},
 			},
 			wantErr: assert.NoError,
+		},
+		{
+			testName: "Error/wrong connection string",
+			dbURL:    "mongdb://localhost:27017",
+			args: args{
+				data: models.DataObject{
+					"0704660968": "Emmanuel",
+				},
+			},
+			wantErr: assert.Error,
 		},
 	}
 
@@ -38,7 +50,7 @@ func TestMongo(t *testing.T) {
 		t.Run(tc.testName, func(t *testing.T) {
 			t.Parallel()
 
-			mongoDB := mongodb.NewMongoDB("mongodb://localhost:27017")
+			mongoDB := mongodb.NewMongoDB(tc.dbURL)
 
 			performMongoTest(t, tc, mongoDB)
 		})
@@ -47,6 +59,7 @@ func TestMongo(t *testing.T) {
 
 func performMongoTest(t *testing.T, tc struct {
 	testName string
+	dbURL    string
 	args     args
 	wantErr  assert.ErrorAssertionFunc
 }, mongoDB *mongodb.MongoDB,

@@ -21,28 +21,28 @@ type Contact struct {
 	Name  string
 }
 
-func openDB(url string) *mongo.Client {
+func connectToDB(url string) (*mongo.Client, error) {
 	// Set client options
 	clientOptions := options.Client().ApplyURI(url)
 
 	// Connect to mongodb
 	client, err := mongo.Connect(context.Background(), clientOptions)
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("failed to connect to mongodb %w", err)
 	}
 
 	// Ping the MongoDB server to check the connection
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("failed to connect to mongodb %w", err)
 	}
 
 	log.Info("----DATABASE CONNECTED SUCCESSFULLY")
 
-	return client
+	return client, nil
 }
 
-func closeDB(client *mongo.Client) {
+func disconnectFromDB(client *mongo.Client) {
 	// Close the connection when you're done
 	err := client.Disconnect(context.Background())
 	if err != nil {
@@ -53,7 +53,12 @@ func closeDB(client *mongo.Client) {
 func (db *MongoDB) Create(data models.DataObject) error {
 	var contact Contact
 
-	client := openDB(db.databaseURL)
+	client, conncetionErr := connectToDB(db.databaseURL)
+	if conncetionErr != nil {
+		return fmt.Errorf("failed to connect to database: %w", conncetionErr)
+	}
+
+	defer disconnectFromDB(client)
 
 	// Access the database and collection
 	database := client.Database("test_contacts")
@@ -63,23 +68,22 @@ func (db *MongoDB) Create(data models.DataObject) error {
 		contact = Contact{Phone: key, Name: value}
 	}
 
-	// Insert a document
-	// person := Person{Name: "John Doe", Email: "johndoe@example.com", Age: 30}
-
 	_, err := collection.InsertOne(context.Background(), contact)
 	if err != nil {
 		return fmt.Errorf("failed to insert item %w", err)
 	}
-	// fmt.Println("Document inserted successfully!")
-
-	closeDB(client)
 
 	return nil
 }
 
 func (db *MongoDB) Read(number string) (models.DataObject, error) {
-	client := openDB(db.databaseURL)
-	// Access the database and collection
+	client, conncetionErr := connectToDB(db.databaseURL)
+	if conncetionErr != nil {
+		return nil, fmt.Errorf("failed to connect to database: %w", conncetionErr)
+	}
+
+	defer disconnectFromDB(client)
+
 	database := client.Database("test_contacts")
 	collection := database.Collection("contacts")
 
@@ -96,15 +100,16 @@ func (db *MongoDB) Read(number string) (models.DataObject, error) {
 		result.Phone: result.Name,
 	}
 
-	// fmt.Printf("Found document: %+v\n", contact)
-
-	closeDB(client)
-
 	return contact, nil
 }
 
 func (db *MongoDB) Update(newData models.DataObject) error {
-	client := openDB(db.databaseURL)
+	client, conncetionErr := connectToDB(db.databaseURL)
+	if conncetionErr != nil {
+		return fmt.Errorf("failed to connect to database: %w", conncetionErr)
+	}
+
+	defer disconnectFromDB(client)
 
 	var phoneNumber string
 	var newName string
@@ -126,15 +131,17 @@ func (db *MongoDB) Update(newData models.DataObject) error {
 	if err != nil {
 		return fmt.Errorf("failed to update item %w", err)
 	}
-	// fmt.Println("Document updated successfully!")
-
-	closeDB(client)
 
 	return nil
 }
 
 func (db *MongoDB) Delete(number string) error {
-	client := openDB(db.databaseURL)
+	client, conncetionErr := connectToDB(db.databaseURL)
+	if conncetionErr != nil {
+		return fmt.Errorf("failed to connect to database: %w", conncetionErr)
+	}
+
+	defer disconnectFromDB(client)
 
 	// Access the database and collection
 	database := client.Database("test_contacts")
@@ -147,15 +154,16 @@ func (db *MongoDB) Delete(number string) error {
 		return fmt.Errorf("failed to delete item %w", err)
 	}
 
-	closeDB(client)
-
 	return nil
 }
 
 func (db *MongoDB) ReadAll() ([]models.DataObject, error) {
-	client := openDB(db.databaseURL)
-	// Find multiple documents
+	client, conncetionErr := connectToDB(db.databaseURL)
+	if conncetionErr != nil {
+		return nil, fmt.Errorf("failed to connect to database: %w", conncetionErr)
+	}
 
+	defer disconnectFromDB(client)
 	// Access the database and collection
 	database := client.Database("test_contacts")
 	collection := database.Collection("contacts")
@@ -185,8 +193,6 @@ func (db *MongoDB) ReadAll() ([]models.DataObject, error) {
 	if err := cur.Err(); err != nil {
 		return []models.DataObject{}, fmt.Errorf("failed to get items %w", err)
 	}
-
-	closeDB(client)
 
 	return results, nil
 }
