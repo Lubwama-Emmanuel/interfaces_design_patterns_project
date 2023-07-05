@@ -1,71 +1,66 @@
 package main
 
 import (
-	// inmemory "github.com/Lubwama-Emmannuel/Interfaces/in_memory"
-	"fmt"
+	log "github.com/sirupsen/logrus"
 
-	file_system "github.com/Lubwama-Emmannuel/Interfaces/fileSystem"
+	"github.com/Lubwama-Emmanuel/Interfaces/app"
+	filesystem "github.com/Lubwama-Emmanuel/Interfaces/storage/file_system"
 )
 
 func main() {
-	db := file_system.NewFile()
+	// storage := memory.NewMemoryStorage()
+	storage := filesystem.NewFileSytemDatabase("data.json")
+
+	db := app.NewApp(storage)
+
+	// name := "testName"
+	// phone := "1234567890"
 
 	// Create a new record
-	err := db.Create("Hello, File!")
-	if err != nil {
-		fmt.Println("an error occurred creating file", err)
+	saveErr := db.SavePhoneNumber("Test Name", "1234567890")
+	if saveErr != nil {
+		log.Error("an error occurred creating file: ", saveErr)
 	}
 
-	// Read created record
-	data, err := db.Read()
-	if err != nil {
-		fmt.Println("an error occurred reading created file", err)
-	}
-	fmt.Println(data)
+	// saveErr = db.SavePhoneNumber("Emmanuel", "0706039119")
+	// if saveErr != nil {
+	// 	log.Error("an error occurred creating file: ", saveErr)
+	// }
 
-	// Update the record
-	err = db.Update("Update worked very well")
-	if err != nil {
-		fmt.Println("an error occurred reading updating file", err)
-	}
+	// // Read created record
+	// data, err := db.GetName("1234567890")
+	// if err != nil {
+	// 	log.Error("an error occurred reading created file: ", err)
+	// }
+
+	// log.Info("saved data is: ", data)
+
+	// // Update the record
+
+	// updateErr := db.UpdateName("1234567890", "Uncle Drizzy")
+	// if updateErr != nil {
+	// 	log.Error("an error occurred reading updating file: ", updateErr)
+	// }
 
 	// Read the updated record
-	updatedData, err := db.Read()
+	// updatedData, err := db.GetName("1234567890")
+	// if err != nil {
+	// 	log.Error("an error occurred reading updated file: ", err)
+	// }
+
+	// log.Info("updated data is: ", updatedData)
+
+	// deleteErr := db.DeleteContact("1234567890")
+	// if deleteErr != nil {
+	// 	log.Error("an error occurred reading updated file", deleteErr)
+	// }
+
+	// // db.DeleteContact("1234567890")
+
+	phoneNumbers, err := db.GetAllPhoneNumbers()
 	if err != nil {
-		fmt.Println("an error occurred reading updated file", err)
-
+		log.Error("an error occurred getting all numbers: ", err)
 	}
-	fmt.Println(updatedData)
 
-	// db := &inmemory.InMemoryDatabase{}
-	// if err := db.Create("Hello, Emmanuel!"); err != nil {
-	// 	fmt.Println("An error occurred during read")
-	// }
-
-	// data, err := db.Read()
-	// if err != nil {
-	// 	fmt.Println("An error occurred during reading data")
-	// }
-	// fmt.Println("Created data", data)
-
-	// if err := db.Update("Hello, Rex!"); err != nil {
-	// 	fmt.Println("An error occurred during update")
-	// }
-
-	// updatedData, err := db.Read()
-	// if err != nil {
-	// 	fmt.Println("An error occurred during reading data")
-	// }
-	// fmt.Println("Updated data", updatedData)
-
-	// if err := db.Delete(); err != nil {
-	// 	fmt.Println("An error occurred during delete")
-	// }
-
-	// deleted, err := db.Read()
-	// if err != nil {
-	// 	fmt.Println("An error occurred during reading data")
-	// }
-	// fmt.Println("Deleted", deleted)
-
+	log.Info("numbers", phoneNumbers)
 }
