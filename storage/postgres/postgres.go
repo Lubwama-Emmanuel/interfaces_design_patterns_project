@@ -135,7 +135,7 @@ func NewPostgresDB(database string) *PostgresDB {
 	// DB string
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, database) //nolint:lll
 
-	dia := postgres.Open(dsn)
+	dialector := postgres.Open(dsn)
 
-	return &PostgresDB{Dialector: dia}
+	return &PostgresDB{Dialector: dialector}
 }

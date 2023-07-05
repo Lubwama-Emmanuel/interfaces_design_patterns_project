@@ -52,11 +52,6 @@ func main() {
 
 	// log.Info("updated data is: ", updatedData)
 
-	// deleteErr := db.DeleteContact("07047286821")
-	// if deleteErr != nil {
-	// 	log.Error("an error occurred reading updated file", deleteErr)
-	// }
-
 	// db.DeleteContact("1234567890")
 
 	phoneNumbers, err := db.GetAllPhoneNumbers()
