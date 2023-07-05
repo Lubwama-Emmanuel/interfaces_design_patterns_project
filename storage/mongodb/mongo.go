@@ -88,7 +88,7 @@ func (db *MongoDB) Read(number string) (models.DataObject, error) {
 	collection := database.Collection("contacts")
 
 	// Find a document
-	filter := bson.M{"phone": "1234567890"}
+	filter := bson.M{"phone": number}
 	var result Contact
 
 	err := collection.FindOne(context.Background(), filter).Decode(&result)
