@@ -4,14 +4,14 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
-	"github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
+	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
 )
 
 func main() {
 	// storage := memory.NewMemoryStorage()
 	// storage := filesystem.NewFileSytemDatabase("data.json")
-	// storage := mongodb.NewMongoDB("mongodb://localhost:27017")
-	storage := postgres.NewPostgresDB("phonebook")
+	storage := mongodb.NewMongoDB("mongodb://localhost:27017")
+	// storage := postgres.NewPostgresDB("phonebook")
 
 	db := app.NewApp(storage)
 
@@ -52,7 +52,7 @@ func main() {
 
 	// log.Info("updated data is: ", updatedData)
 
-	// deleteErr := db.DeleteContact("0782640437")
+	// deleteErr := db.DeleteContact("07047286821")
 	// if deleteErr != nil {
 	// 	log.Error("an error occurred reading updated file", deleteErr)
 	// }
