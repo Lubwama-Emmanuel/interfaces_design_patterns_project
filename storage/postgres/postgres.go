@@ -5,7 +5,7 @@ import (
 )
 
 type PhoneNumberStorage struct { //nolint:revi
-	conn      *PostgresDB
+	conn *PostgresDB
 }
 
 func NewPhoneNumberStorage(db *PostgresDB) *PhoneNumberStorage {

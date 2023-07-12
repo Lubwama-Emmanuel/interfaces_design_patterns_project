@@ -8,7 +8,7 @@ type contact struct {
 	Name  string
 }
 
-func (c contact)toDataObject() models.DataObject {
+func (c contact) toDataObject() models.DataObject {
 	return models.DataObject{
 		c.Phone: c.Name,
 	}

@@ -1,9 +1,9 @@
 package postgres
 
 import (
+	"database/sql"
 	"fmt"
 
-	"database/sql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -46,4 +46,3 @@ func (p *PostgresDB) Conn() (*sql.DB, error) {
 
 	return db, nil
 }
-
