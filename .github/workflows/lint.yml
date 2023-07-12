@@ -2,6 +2,10 @@ name: Lint Go Code
 
 on: [push, pull_request]
 
+env:
+  VAR_ABC: ${{ secrets.VAR_ABC }}
+  VAR_DEF: ${{ secrets.VAR_DEF }}
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -16,3 +20,4 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.51.2
 
           golangci-lint run  -c .golangci.yml
+
