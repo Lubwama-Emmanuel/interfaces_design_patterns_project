@@ -4,14 +4,20 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
-	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
+	// "github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
+	"github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
 )
 
 func main() {
 	// storage := memory.NewMemoryStorage()
 	// storage := filesystem.NewFileSytemDatabase("data.json")
-	storage := mongodb.NewMongoDB("mongodb://localhost:27017")
-	// storage := postgres.NewPostgresDB("phonebook")
+	// storage := mongodb.NewMongoDB("mongodb://localhost:27017")
+	pg, err := postgres.NewPostgresDB("phonebook", nil)
+	if err != nil {
+		log.WithError(err).Fatal("an error occurred while connecting to postgresql")
+	}
+
+	storage := postgres.NewPhoneNumberStorage(pg)
 
 	db := app.NewApp(storage)
 

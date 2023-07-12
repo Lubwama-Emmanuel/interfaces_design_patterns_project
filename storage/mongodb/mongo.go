@@ -12,7 +12,7 @@ import (
 	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
 
-type MongoDB struct {
+type PhoneNumberStorage struct {
 	databaseURL string
 }
 
@@ -50,7 +50,7 @@ func disconnectFromDB(client *mongo.Client) {
 	}
 }
 
-func (db *MongoDB) Create(data models.DataObject) error {
+func (db *PhoneNumberStorage) Create(data models.DataObject) error {
 	var contact Contact
 
 	client, conncetionErr := connectToDB(db.databaseURL)
@@ -76,7 +76,7 @@ func (db *MongoDB) Create(data models.DataObject) error {
 	return nil
 }
 
-func (db *MongoDB) Read(number string) (models.DataObject, error) {
+func (db *PhoneNumberStorage) Read(number string) (models.DataObject, error) {
 	client, conncetionErr := connectToDB(db.databaseURL)
 	if conncetionErr != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", conncetionErr)
@@ -103,7 +103,7 @@ func (db *MongoDB) Read(number string) (models.DataObject, error) {
 	return contact, nil
 }
 
-func (db *MongoDB) Update(newData models.DataObject) error {
+func (db *PhoneNumberStorage) Update(newData models.DataObject) error {
 	client, conncetionErr := connectToDB(db.databaseURL)
 	if conncetionErr != nil {
 		return fmt.Errorf("failed to connect to database: %w", conncetionErr)
@@ -135,7 +135,7 @@ func (db *MongoDB) Update(newData models.DataObject) error {
 	return nil
 }
 
-func (db *MongoDB) Delete(number string) error {
+func (db *PhoneNumberStorage) Delete(number string) error {
 	client, conncetionErr := connectToDB(db.databaseURL)
 	if conncetionErr != nil {
 		return fmt.Errorf("failed to connect to database: %w", conncetionErr)
@@ -157,7 +157,7 @@ func (db *MongoDB) Delete(number string) error {
 	return nil
 }
 
-func (db *MongoDB) ReadAll() ([]models.DataObject, error) {
+func (db *PhoneNumberStorage) ReadAll() ([]models.DataObject, error) {
 	client, conncetionErr := connectToDB(db.databaseURL)
 	if conncetionErr != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", conncetionErr)
@@ -197,6 +197,6 @@ func (db *MongoDB) ReadAll() ([]models.DataObject, error) {
 	return results, nil
 }
 
-func NewMongoDB(url string) *MongoDB {
-	return &MongoDB{databaseURL: url}
+func NewMongoDB(url string) *PhoneNumberStorage {
+	return &PhoneNumberStorage{databaseURL: url}
 }
