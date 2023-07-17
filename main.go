@@ -8,6 +8,8 @@ import (
 )
 
 func main() {
+	// Setting the viper configuration file, name , and path
+
 	// storage := memory.NewMemoryStorage()
 	// storage := filesystem.NewFileSytemDatabase("data.json")
 	storage := mongodb.NewMongoDB("mongodb://localhost:27017")
