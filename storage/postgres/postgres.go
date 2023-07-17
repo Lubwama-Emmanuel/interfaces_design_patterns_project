@@ -98,7 +98,10 @@ func (db *PostgresDB) Delete(number string) error {
 		return fmt.Errorf("failed to create contact %w", err)
 	}
 
-	DB.Delete(&contact, number)
+	result := DB.Delete(&contact, number)
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete contact %w", result.Error)
+	}
 
 	return nil
 }
