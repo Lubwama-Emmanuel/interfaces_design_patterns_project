@@ -81,11 +81,11 @@ func TestPostgres(t *testing.T) {
 }
 
 func performPostgresTest(t *testing.T, tc struct {
-	testName   string
-	postgresDB *post.PostgresDB
-	args       args
-	wantErr    assert.ErrorAssertionFunc
-}, postgresDB *post.PostgresDB,
+	testName string
+	storage  *post.PhoneNumberStorage
+	args     args
+	wantErr  assert.ErrorAssertionFunc
+}, postgresDB *post.PhoneNumberStorage,
 ) {
 	createErr := postgresDB.Create(tc.args.data)
 	if createErr != nil && tc.wantErr == nil {
