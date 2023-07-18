@@ -25,21 +25,22 @@ func TestPostgres(t *testing.T) {
 		DriverName: "postgres",
 	})
 
-	postgresDB := &post.PostgresDB{
-		Dialector: dialector,
+	pgdb, err := post.NewPostgresDB("", dialector)
+	if err != nil {
+		t.Fatalf("failed to create postgres storage: %s", err)
 	}
 
-	errDB := post.NewPostgresDB("")
+	storage := post.NewPhoneNumberStorage(pgdb)
 
 	tests := []struct {
-		testName   string
-		postgresDB *post.PostgresDB
-		args       args
-		wantErr    assert.ErrorAssertionFunc
+		testName string
+		storage  *post.PhoneNumberStorage
+		args     args
+		wantErr  assert.ErrorAssertionFunc
 	}{
 		{
-			testName:   "success",
-			postgresDB: postgresDB,
+			testName: "success",
+			storage:  storage,
 			args: args{
 				data: models.DataObject{
 					"0704660968": "Emmanuel",
@@ -48,8 +49,8 @@ func TestPostgres(t *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
-			testName:   "success",
-			postgresDB: postgresDB,
+			testName: "success",
+			storage:  storage,
 			args: args{
 				data: models.DataObject{
 					"0706039119": "Lubwama",
@@ -58,8 +59,8 @@ func TestPostgres(t *testing.T) {
 			wantErr: assert.NoError,
 		},
 		{
-			testName:   "err database",
-			postgresDB: errDB,
+			testName: "err database",
+			storage:  storage,
 			args: args{
 				data: models.DataObject{
 					"": "",
@@ -74,7 +75,7 @@ func TestPostgres(t *testing.T) {
 		t.Run(tc.testName, func(t *testing.T) {
 			t.Parallel()
 
-			performPostgresTest(t, tc, tc.postgresDB)
+			performPostgresTest(t, tc, tc.storage)
 		})
 	}
 }

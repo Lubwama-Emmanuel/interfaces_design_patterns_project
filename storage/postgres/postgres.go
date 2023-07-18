@@ -1,73 +1,44 @@
 package postgres
 
 import (
-	"fmt"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
-
 	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
 
-type PostgresDB struct { //nolint:revive
-	Dialector gorm.Dialector
+type PhoneNumberStorage struct { //nolint:revi
+	conn *PostgresDB
 }
 
-type Contact struct {
-	// gorm.Model
-	Phone string `gorm:"primaryKey"`
-	Name  string
-}
-
-func openDB(dialector gorm.Dialector) (*gorm.DB, error) {
-	// Open db
-	db, err := gorm.Open(dialector, &gorm.Config{})
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to DB %w", err)
+func NewPhoneNumberStorage(db *PostgresDB) *PhoneNumberStorage {
+	return &PhoneNumberStorage{
+		conn: db,
 	}
-
-	return db, nil
 }
 
-func (db *PostgresDB) Create(data models.DataObject) error {
-	var contact Contact
+func (db *PhoneNumberStorage) Create(data models.DataObject) error {
+	var ct contact
 
 	for key, value := range data {
-		contact = Contact{
+		ct = contact{
 			Phone: key,
 			Name:  value,
 		}
 	}
 
-	DB, err := openDB(db.Dialector)
-	if err != nil {
-		return fmt.Errorf("failed to create contact %w", err)
-	}
-
-	DB.Create(&contact)
+	db.conn.Create(&ct)
 
 	return nil
 }
 
-func (db *PostgresDB) Read(number string) (models.DataObject, error) {
-	var contact Contact
+func (db *PhoneNumberStorage) Read(number string) (models.DataObject, error) {
+	var contact contact
 
-	DB, err := openDB(db.Dialector)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create contact %w", err)
-	}
+	query := db.conn.First(&contact, number)
 
-	DB.First(&contact, number)
-
-	result := models.DataObject{
-		contact.Phone: contact.Name,
-	}
-
-	return result, nil
+	return contact.toDataObject(), toAppError(query.Error)
 }
 
-func (db *PostgresDB) Update(newData models.DataObject) error {
-	var contact Contact
+func (db *PhoneNumberStorage) Update(newData models.DataObject) error {
+	var contact contact
 	var phoneNumber string
 	var phoneName string
 
@@ -76,45 +47,27 @@ func (db *PostgresDB) Update(newData models.DataObject) error {
 		phoneName = value
 	}
 
-	DB, err := openDB(db.Dialector)
-	if err != nil {
-		return fmt.Errorf("failed to create contact %w", err)
-	}
-
-	DB.Where("phone=?", phoneNumber).First(&contact)
+	db.conn.Where("phone=?", phoneNumber).First(&contact)
 
 	contact.Name = phoneName
 
-	DB.Save(&contact)
+	db.conn.Save(&contact)
 
 	return nil
 }
 
-func (db *PostgresDB) Delete(number string) error {
-	var contact Contact
+func (db *PhoneNumberStorage) Delete(number string) error {
+	var contact contact
 
-	DB, err := openDB(db.Dialector)
-	if err != nil {
-		return fmt.Errorf("failed to create contact %w", err)
-	}
-
-	result := DB.Delete(&contact, number)
-	if result.Error != nil {
-		return fmt.Errorf("failed to delete contact %w", result.Error)
-	}
+	db.conn.Delete(&contact, number)
 
 	return nil
 }
 
-func (db *PostgresDB) ReadAll() ([]models.DataObject, error) {
-	var contacts []Contact
+func (db *PhoneNumberStorage) ReadAll() ([]models.DataObject, error) {
+	var contacts []contact
 
-	DB, err := openDB(db.Dialector)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create contact %w", err)
-	}
-
-	DB.Find(&contacts)
+	db.conn.Find(&contacts)
 
 	var results []models.DataObject //nolint:prealloc
 
@@ -126,19 +79,4 @@ func (db *PostgresDB) ReadAll() ([]models.DataObject, error) {
 	}
 
 	return results, nil
-}
-
-func NewPostgresDB(database string) *PostgresDB {
-	host := "localhost"
-	port := "5432"
-	user := "postgres"
-	password := "1234567890"
-	// dbName := "phonebook"
-
-	// DB string
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, database) //nolint:lll
-
-	dialector := postgres.Open(dsn)
-
-	return &PostgresDB{Dialector: dialector}
 }

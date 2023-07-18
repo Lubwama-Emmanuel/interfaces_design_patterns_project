@@ -62,7 +62,7 @@ func performMongoTest(t *testing.T, tc struct {
 	dbURL    string
 	args     args
 	wantErr  assert.ErrorAssertionFunc
-}, mongoDB *mongodb.MongoDB,
+}, mongoDB *mongodb.PhoneNumberStorage,
 ) {
 	createErr := mongoDB.Create(tc.args.data)
 	if createErr != nil && tc.wantErr == nil {
