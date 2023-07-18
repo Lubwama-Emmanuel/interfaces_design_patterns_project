@@ -4,8 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
-	// "github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
-	"github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
+	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
+	// "github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
 )
 
 func main() {
@@ -13,13 +13,15 @@ func main() {
 
 	// storage := memory.NewMemoryStorage()
 	// storage := filesystem.NewFileSytemDatabase("data.json")
-	// storage := mongodb.NewMongoDB("mongodb://localhost:27017")
-	pg, err := postgres.NewPostgresDB("phonebook", nil)
-	if err != nil {
-		log.WithError(err).Fatal("an error occurred while connecting to postgresql")
-	}
+	mgdb := mongodb.NewMongoDB("mongodb://localhost:27017")
+	storage := mongodb.NewPhoneNumberStorage(mgdb)
 
-	storage := postgres.NewPhoneNumberStorage(pg)
+	// pg, err := postgres.NewPostgresDB("phonebook", nil)
+	// if err != nil {
+	// 	log.WithError(err).Fatal("an error occurred while connecting to postgresql")
+	// }
+
+	// storage := postgres.NewPhoneNumberStorage(pg)
 
 	db := app.NewApp(storage)
 
@@ -27,10 +29,10 @@ func main() {
 	// phone := "1234567890"
 
 	// Create a new record
-	saveErr := db.SavePhoneNumber("Gift", "07047286821")
-	if saveErr != nil {
-		log.Error("an error occurred creating file: ", saveErr)
-	}
+	// saveErr := db.SavePhoneNumber("AnnCarl", "89004")
+	// if saveErr != nil {
+	// 	log.Error("an error occurred creating file: ", saveErr)
+	// }
 
 	// saveErr := db.SavePhoneNumber("Emmanuel", "0782640437")
 	// if saveErr != nil {
@@ -38,7 +40,7 @@ func main() {
 	// }
 
 	// Read created record
-	data, err := db.GetName("0706039119")
+	data, err := db.GetName("8900r4")
 	if err != nil {
 		log.Error("an error occurred reading created file: ", err)
 	}
@@ -62,10 +64,10 @@ func main() {
 
 	// db.DeleteContact("1234567890")
 
-	phoneNumbers, err := db.GetAllPhoneNumbers()
-	if err != nil {
-		log.Error("an error occurred getting all numbers: ", err)
-	}
+	// phoneNumbers, err := db.GetAllPhoneNumbers()
+	// if err != nil {
+	// 	log.Error("an error occurred getting all numbers: ", err)
+	// }
 
-	log.Info("numbers", phoneNumbers)
+	// log.Info("numbers", phoneNumbers)
 }
