@@ -51,8 +51,9 @@ func TestMongo(t *testing.T) {
 			t.Parallel()
 
 			mongoDB := mongodb.NewMongoDB(tc.dbURL)
+			storage := mongodb.NewPhoneNumberStorage(mongoDB)
 
-			performMongoTest(t, tc, mongoDB)
+			performMongoTest(t, tc, storage)
 		})
 	}
 }
