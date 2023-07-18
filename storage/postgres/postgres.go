@@ -24,9 +24,9 @@ func (db *PhoneNumberStorage) Create(data models.DataObject) error {
 		}
 	}
 
-	db.conn.Create(&ct)
+	query := db.conn.Create(&ct)
 
-	return nil
+	return toAppError(query.Error)
 }
 
 func (db *PhoneNumberStorage) Read(number string) (models.DataObject, error) {
@@ -51,32 +51,30 @@ func (db *PhoneNumberStorage) Update(newData models.DataObject) error {
 
 	contact.Name = phoneName
 
-	db.conn.Save(&contact)
+	query := db.conn.Save(&contact)
 
-	return nil
+	return toAppError(query.Error)
 }
 
 func (db *PhoneNumberStorage) Delete(number string) error {
 	var contact contact
 
-	db.conn.Delete(&contact, number)
+	query := db.conn.Delete(&contact, number)
 
-	return nil
+	return toAppError(query.Error)
 }
 
 func (db *PhoneNumberStorage) ReadAll() ([]models.DataObject, error) {
 	var contacts []contact
 
-	db.conn.Find(&contacts)
+	query := db.conn.Find(&contacts)
 
 	var results []models.DataObject //nolint:prealloc
 
 	for _, value := range contacts {
-		finalResult := models.DataObject{
-			value.Phone: value.Name,
-		}
+		finalResult := value.toDataObject()
 		results = append(results, finalResult)
 	}
 
-	return results, nil
+	return results, toAppError(query.Error)
 }
