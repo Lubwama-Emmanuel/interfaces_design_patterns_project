@@ -2,18 +2,25 @@ package main
 
 import (
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
+	// "github.com/Lubwama-Emmanuel/Interfaces/storage/postgres".
 	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
-	// "github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
 )
 
-func main() {
+func main() { //nolint:funlen
 	// Setting the viper configuration file, name , and path
+	viper.SetConfigFile(".env")
+
+	viperErr := viper.ReadInConfig()
+	if viperErr != nil {
+		log.Error("failed to load env variables")
+	}
 
 	// storage := memory.NewMemoryStorage()
 	// storage := filesystem.NewFileSytemDatabase("data.json")
-	mgdb := mongodb.NewMongoDB("mongodb://localhost:27017")
+	mgdb := mongodb.NewMongoDB(viper.GetString("MONGODB_URL"))
 	storage := mongodb.NewPhoneNumberStorage(mgdb)
 
 	// pg, err := postgres.NewPostgresDB("phonebook", nil)
@@ -40,7 +47,7 @@ func main() {
 	// }
 
 	// Read created record
-	data, err := db.GetName("8900r4")
+	data, err := db.GetName("89004")
 	if err != nil {
 		log.Error("an error occurred reading created file: ", err)
 	}
@@ -64,10 +71,10 @@ func main() {
 
 	// db.DeleteContact("1234567890")
 
-	// phoneNumbers, err := db.GetAllPhoneNumbers()
-	// if err != nil {
-	// 	log.Error("an error occurred getting all numbers: ", err)
-	// }
+	phoneNumbers, err := db.GetAllPhoneNumbers()
+	if err != nil {
+		log.Error("an error occurred getting all numbers: ", err)
+	}
 
-	// log.Info("numbers", phoneNumbers)
+	log.Info("numbers", phoneNumbers)
 }
