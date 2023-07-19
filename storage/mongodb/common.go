@@ -2,7 +2,8 @@ package mongodb
 
 import (
 	"errors"
-	"fmt"
+
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/models"
 )
@@ -12,10 +13,7 @@ func toAppError(err error) error {
 		return nil
 	}
 
-	target := errors.New("no document in result")
-
-	if errors.Is(err, target) {
-		fmt.Println("worked")
+	if errors.Is(err, mongo.ErrNoDocuments) {
 		return models.ErrNotFound
 	}
 

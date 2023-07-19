@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type mongoDB struct {
+type MongoDB struct {
 	*mongo.Collection
 }
 
@@ -33,13 +33,14 @@ func connectToDB(url string) *mongo.Client {
 	return client
 }
 
-func NewMongoDB(url string) *mongoDB {
+func NewMongoDB(url string) *MongoDB {
 	client := connectToDB(url)
 
 	// Access the database and collection
 	database := client.Database("test_contacts")
 	collection := database.Collection("contacts")
-	return &mongoDB{
+
+	return &MongoDB{
 		Collection: collection,
 	}
 }

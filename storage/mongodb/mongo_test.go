@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/models"
@@ -25,7 +26,7 @@ func TestMongo(t *testing.T) {
 	}{
 		{
 			testName: "success",
-			dbURL:    "mongodb+srv://lubwamaemmanuel1:tfOkFBHXNTZHtJPq@cluster0.qubflio.mongodb.net/?retryWrites=true&w=majority", //nolint:lll
+			dbURL:    viper.GetString("MONGODB_TEST_URL"),
 			args: args{
 				data: models.DataObject{
 					"0704660968": "Emmanuel",

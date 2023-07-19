@@ -4,19 +4,20 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-type PostgresDB struct {
+type PostgresDB struct { //nolint:revive
 	*gorm.DB
 }
 
 func NewPostgresDB(database string, dialector gorm.Dialector) (*PostgresDB, error) {
-	host := "localhost"
-	port := "5432"
-	user := "postgres"
-	password := "1234567890"
+	host := viper.GetString("PG_HOST")
+	port := viper.GetString("PG_PORT")
+	user := viper.GetString("PG_USER")
+	password := viper.GetString("PG_PASSWORD")
 	// dbName := "phonebook"
 
 	// DB string

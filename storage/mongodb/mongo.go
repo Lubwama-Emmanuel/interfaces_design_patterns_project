@@ -10,10 +10,10 @@ import (
 )
 
 type PhoneNumberStorage struct {
-	coll *mongoDB
+	coll *MongoDB
 }
 
-func NewPhoneNumberStorage(db *mongoDB) *PhoneNumberStorage {
+func NewPhoneNumberStorage(db *MongoDB) *PhoneNumberStorage {
 	return &PhoneNumberStorage{
 		coll: db,
 	}
@@ -58,28 +58,22 @@ func (db *PhoneNumberStorage) Update(newData models.DataObject) error {
 	update := bson.M{"$set": bson.M{"name": newName}}
 
 	_, err := db.coll.UpdateOne(context.Background(), filter, update)
-	if err != nil {
-		return fmt.Errorf("failed to update item %w", err)
-	}
 
-	return nil
+	return toAppError(err)
 }
 
 func (db *PhoneNumberStorage) Delete(number string) error {
 	filter := bson.M{"phone": number}
 
 	_, err := db.coll.DeleteOne(context.Background(), filter)
-	if err != nil {
-		return fmt.Errorf("failed to delete item %w", err)
-	}
 
-	return nil
+	return toAppError(err)
 }
 
 func (db *PhoneNumberStorage) ReadAll() ([]models.DataObject, error) {
 	cur, err := db.coll.Find(context.Background(), bson.D{})
 	if err != nil {
-		return []models.DataObject{}, fmt.Errorf("failed to insert item %w", err)
+		return []models.DataObject{}, toAppError(err)
 	}
 	defer cur.Close(context.Background())
 

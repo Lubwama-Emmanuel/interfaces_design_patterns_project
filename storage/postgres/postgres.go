@@ -30,15 +30,15 @@ func (db *PhoneNumberStorage) Create(data models.DataObject) error {
 }
 
 func (db *PhoneNumberStorage) Read(number string) (models.DataObject, error) {
-	var contact contact
+	var ct contact
 
-	query := db.conn.First(&contact, number)
+	query := db.conn.First(&ct, number)
 
-	return contact.toDataObject(), toAppError(query.Error)
+	return ct.toDataObject(), toAppError(query.Error)
 }
 
 func (db *PhoneNumberStorage) Update(newData models.DataObject) error {
-	var contact contact
+	var ct contact
 	var phoneNumber string
 	var phoneName string
 
@@ -47,19 +47,19 @@ func (db *PhoneNumberStorage) Update(newData models.DataObject) error {
 		phoneName = value
 	}
 
-	db.conn.Where("phone=?", phoneNumber).First(&contact)
+	db.conn.Where("phone=?", phoneNumber).First(&ct)
 
-	contact.Name = phoneName
+	ct.Name = phoneName
 
-	query := db.conn.Save(&contact)
+	query := db.conn.Save(&ct)
 
 	return toAppError(query.Error)
 }
 
 func (db *PhoneNumberStorage) Delete(number string) error {
-	var contact contact
+	var ct contact
 
-	query := db.conn.Delete(&contact, number)
+	query := db.conn.Delete(&ct, number)
 
 	return toAppError(query.Error)
 }
