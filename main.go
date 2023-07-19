@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
@@ -19,8 +17,6 @@ func main() { //nolint:funlen
 	if viperErr != nil {
 		log.Error("failed to load env variables")
 	}
-
-	fmt.Println(viper.GetString("MONGODB_TEST_URL"))
 
 	// storage := memory.NewMemoryStorage()
 	// storage := filesystem.NewFileSytemDatabase("data.json")
