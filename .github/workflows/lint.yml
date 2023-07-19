@@ -3,8 +3,11 @@ name: Lint Go Code
 on: [push, pull_request]
 
 env:
-  VAR_ABC: ${{ secrets.VAR_ABC }}
-  VAR_DEF: ${{ secrets.VAR_DEF }}
+  MONGODB_URL: ${{ secrets.MONGODB_URL }}
+  PG_HOST: ${{ secrets.PG_HOST }}
+  PG_PORT: ${{ secrets.PG_PORT }}
+  PG_USER: ${{ secrets.PG_USER }}
+  PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
 
 jobs:
   lint:
@@ -20,4 +23,3 @@ jobs:
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.51.2
 
           golangci-lint run  -c .golangci.yml
-
