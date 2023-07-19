@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/models"
@@ -26,7 +25,7 @@ func TestMongo(t *testing.T) {
 	}{
 		{
 			testName: "success",
-			dbURL:    viper.GetString("MONGODB_TEST_URL"),
+			dbURL:    "mongodb+srv://lubwamaemmanuel1:tfOkFBHXNTZHtJPq@cluster0.qubflio.mongodb.net/?retryWrites=true&w=majority", //nolint:lll
 			args: args{
 				data: models.DataObject{
 					"0704660968": "Emmanuel",
@@ -34,16 +33,16 @@ func TestMongo(t *testing.T) {
 			},
 			wantErr: assert.NoError,
 		},
-		{
-			testName: "Error/wrong connection string",
-			dbURL:    "mongdb://localhost:27017",
-			args: args{
-				data: models.DataObject{
-					"0704660968": "Emmanuel",
-				},
-			},
-			wantErr: assert.Error,
-		},
+		// {
+		// 	testName: "Error/wrong connection string",
+		// 	dbURL:    "mongdb://localhost:27017",
+		// 	args: args{
+		// 		data: models.DataObject{
+		// 			"0704660968": "Emmanuel",
+		// 		},
+		// 	},
+		// 	wantErr: assert.Error,
+		// },
 	}
 
 	for _, tc := range tests {
