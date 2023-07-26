@@ -1,26 +1,32 @@
 package main
 
 import (
+	"context"
+
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
-	// "github.com/Lubwama-Emmanuel/Interfaces/storage/postgres".
+	"github.com/Lubwama-Emmanuel/Interfaces/config"
+
+	// "github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
 	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
 )
 
 func main() { //nolint:funlen
-	// Setting the viper configuration file, name , and path
-	viper.SetConfigFile(".env")
-
-	viperErr := viper.ReadInConfig()
-	if viperErr != nil {
-		log.Error("failed to load env variables")
+	config, err := config.NewConfig()
+	if err != nil {
+		log.WithError(err).Fatal("failed to load config")
 	}
+
+	ctx := context.Background()
 
 	// storage := memory.NewMemoryStorage()
 	// storage := filesystem.NewFileSytemDatabase("data.json")
-	mgdb := mongodb.NewMongoDB(viper.GetString("MONGODB_URL"))
+	mgdb, err := mongodb.NewMongoDB(ctx, config.Mongo)
+	if err != nil {
+		log.WithError(err).Fatal("an error occured while connecting to mongodb")
+	}
+	defer mgdb.Close(ctx)
 	storage := mongodb.NewPhoneNumberStorage(mgdb)
 
 	// pg, err := postgres.NewPostgresDB("phonebook", nil)
