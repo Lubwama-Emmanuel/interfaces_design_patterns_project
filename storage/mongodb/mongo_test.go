@@ -1,6 +1,7 @@
 package mongodb_test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 
@@ -19,13 +20,12 @@ func TestMongo(t *testing.T) {
 
 	tests := []struct {
 		testName string
-		dbURL    string
+		config   mongodb.MongoConfig
 		args     args
 		wantErr  assert.ErrorAssertionFunc
 	}{
 		{
 			testName: "success",
-			dbURL:    "mongodb+srv://lubwamaemmanuel1:tfOkFBHXNTZHtJPq@cluster0.qubflio.mongodb.net/?retryWrites=true&w=majority", //nolint:lll
 			args: args{
 				data: models.DataObject{
 					"0704660968": "Emmanuel",
@@ -50,7 +50,9 @@ func TestMongo(t *testing.T) {
 		t.Run(tc.testName, func(t *testing.T) {
 			t.Parallel()
 
-			mongoDB := mongodb.NewMongoDB(tc.dbURL)
+			ctx := context.Background()
+
+			mongoDB, _ := mongodb.NewMongoDB(ctx, cfig.Mongo)
 			storage := mongodb.NewPhoneNumberStorage(mongoDB)
 
 			performMongoTest(t, tc, storage)
@@ -60,7 +62,7 @@ func TestMongo(t *testing.T) {
 
 func performMongoTest(t *testing.T, tc struct {
 	testName string
-	dbURL    string
+	config   mongodb.MongoConfig
 	args     args
 	wantErr  assert.ErrorAssertionFunc
 }, mongoDB *mongodb.PhoneNumberStorage,
