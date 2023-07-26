@@ -4,24 +4,27 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+type Config struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
+}
 type PostgresDB struct { //nolint:revive
 	*gorm.DB
 }
 
-func NewPostgresDB(database string, dialector gorm.Dialector) (*PostgresDB, error) {
-	host := viper.GetString("PG_HOST")
-	port := viper.GetString("PG_PORT")
-	user := viper.GetString("PG_USER")
-	password := viper.GetString("PG_PASSWORD")
-	// dbName := "phonebook"
-
+func NewPostgresDB(config Config, dialector gorm.Dialector) (*PostgresDB, error) {
 	// DB string
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, database) //nolint:lll
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		config.Host, config.Port, config.User, config.Password, config.Database,
+	)
 
 	if dialector == nil {
 		// DB dialector

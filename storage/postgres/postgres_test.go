@@ -25,7 +25,7 @@ func TestPostgres(t *testing.T) {
 		DriverName: "postgres",
 	})
 
-	pgdb, err := post.NewPostgresDB("", dialector)
+	pgdb, err := post.NewPostgresDB(post.Config{}, dialector)
 	if err != nil {
 		t.Fatalf("failed to create postgres storage: %s", err)
 	}
