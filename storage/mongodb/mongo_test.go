@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"testing"
 
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/Lubwama-Emmanuel/Interfaces/config"
 	"github.com/Lubwama-Emmanuel/Interfaces/models"
 	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
 )
@@ -52,7 +54,12 @@ func TestMongo(t *testing.T) {
 
 			ctx := context.Background()
 
-			mongoDB, _ := mongodb.NewMongoDB(ctx, cfig.Mongo)
+			config, err := config.NewConfig()
+			if err != nil {
+				log.WithError(err).Fatal("failed to load config")
+			}
+
+			mongoDB, _ := mongodb.NewMongoDB(ctx, config.Mongo)
 			storage := mongodb.NewPhoneNumberStorage(mongoDB)
 
 			performMongoTest(t, tc, storage)

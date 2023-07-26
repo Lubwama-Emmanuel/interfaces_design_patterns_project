@@ -32,6 +32,7 @@ func NewConfig() (Config, error) {
 			Port:     viper.GetString("PG_PORT"),
 			Password: viper.GetString("PG_PASSWORD"),
 			User:     viper.GetString("PG_USER"),
+			Database: viper.GetString("PG_DATABASE"),
 		},
 	}, nil
 }

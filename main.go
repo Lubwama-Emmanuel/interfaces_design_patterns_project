@@ -8,7 +8,7 @@ import (
 	"github.com/Lubwama-Emmanuel/Interfaces/app"
 	"github.com/Lubwama-Emmanuel/Interfaces/config"
 
-	// "github.com/Lubwama-Emmanuel/Interfaces/storage/postgres"
+	// "github.com/Lubwama-Emmanuel/Interfaces/storage/postgres".
 	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
 )
 
@@ -24,12 +24,12 @@ func main() { //nolint:funlen
 	// storage := filesystem.NewFileSytemDatabase("data.json")
 	mgdb, err := mongodb.NewMongoDB(ctx, config.Mongo)
 	if err != nil {
-		log.WithError(err).Fatal("an error occured while connecting to mongodb")
+		log.WithError(err).Fatal("an error occurred while connecting to mongodb")
 	}
 	defer mgdb.Close(ctx)
 	storage := mongodb.NewPhoneNumberStorage(mgdb)
 
-	// pg, err := postgres.NewPostgresDB("phonebook", nil)
+	// pg, err := postgres.NewPostgresDB(config.Postgres, nil)
 	// if err != nil {
 	// 	log.WithError(err).Fatal("an error occurred while connecting to postgresql")
 	// }
@@ -53,12 +53,12 @@ func main() { //nolint:funlen
 	// }
 
 	// Read created record
-	data, err := db.GetName("89004")
-	if err != nil {
-		log.Error("an error occurred reading created file: ", err)
-	}
+	// data, err := db.GetName("89004")
+	// if err != nil {
+	// 	log.Error("an error occurred reading created file: ", err)
+	// }
 
-	log.Info("saved data is: ", data)
+	// log.Info("saved data is: ", data)
 
 	// Update the record
 
