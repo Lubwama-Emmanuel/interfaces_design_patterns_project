@@ -5,3 +5,8 @@
 ## Description
 
 An interface based application implemented with different storage providers including In memory database, File system database among others while maintaining the business logic
+
+
+## Running locally
+
+Define a `local.env` file in the root directory with the variables defined in `config/config.go`

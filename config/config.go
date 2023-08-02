@@ -1,8 +1,7 @@
 package config
 
 import (
-	"fmt"
-
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
 	"github.com/Lubwama-Emmanuel/Interfaces/storage/mongodb"
@@ -16,15 +15,14 @@ type Config struct {
 
 func NewConfig(path string) (Config, error) {
 	// Setting the viper configuration file, name , and path
-	viper.SetConfigName("config")
+	viper.SetConfigName("local")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(path)
 
-	// viper.SetConfigFile("config.env")
-
 	viperErr := viper.ReadInConfig()
 	if viperErr != nil {
-		return Config{}, fmt.Errorf("failed to load env variables: %w", viperErr)
+		log.WithError(viperErr).Warn("failed to read .env file, loading from environment variables")
+		viper.AutomaticEnv()
 	}
 
 	return Config{
