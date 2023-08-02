@@ -14,9 +14,13 @@ type Config struct {
 	Postgres postgres.Config
 }
 
-func NewConfig() (Config, error) {
+func NewConfig(path string) (Config, error) {
 	// Setting the viper configuration file, name , and path
-	viper.SetConfigFile(".env")
+	viper.SetConfigName("config")
+	viper.SetConfigType("env")
+	viper.AddConfigPath(path)
+
+	// viper.SetConfigFile("config.env")
 
 	viperErr := viper.ReadInConfig()
 	if viperErr != nil {
