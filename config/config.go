@@ -24,7 +24,7 @@ func NewConfig(path string) (Config, error) {
 
 	viperErr := viper.ReadInConfig()
 	if viperErr != nil {
-		return Config{}, fmt.Errorf("failed to load env variables: %w", viperErr)
+		return Config{}, fmt.Errorf("failed to read .env file: %w", viperErr)
 	}
 
 	return Config{
