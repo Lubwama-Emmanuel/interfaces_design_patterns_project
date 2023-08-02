@@ -37,16 +37,15 @@ func TestMongo(t *testing.T) {
 			},
 			wantErr: assert.NoError,
 		},
-		// {
-		// 	testName: "Error/wrong connection string",
-		// 	dbURL:    "mongdb://localhost:27017",
-		// 	args: args{
-		// 		data: models.DataObject{
-		// 			"0704660968": "Emmanuel",
-		// 		},
-		// 	},
-		// 	wantErr: assert.Error,
-		// },
+		{
+			testName: "Error/wrong connection string",
+			args: args{
+				data: models.DataObject{
+					"0704660968": "Emmanuel",
+				},
+			},
+			wantErr: assert.Error,
+		},
 	}
 
 	for _, tc := range tests {
