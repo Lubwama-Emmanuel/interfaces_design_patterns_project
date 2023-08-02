@@ -11,7 +11,7 @@ import (
 var cfig config.Config
 
 func TestMain(m *testing.M) {
-	testConfig, err := config.NewConfig()
+	testConfig, err := config.NewConfig("../../env")
 	if err != nil {
 		log.WithError(err).Fatal("failed to load configs")
 	}
