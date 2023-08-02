@@ -59,7 +59,10 @@ func TestMongo(t *testing.T) {
 				log.WithError(err).Fatal("failed to load config")
 			}
 
-			mongoDB, _ := mongodb.NewMongoDB(ctx, config.Mongo)
+			mongoDB, configErr := mongodb.NewMongoDB(ctx, config.Mongo)
+			if configErr != nil {
+				log.WithError(err).Fatal("failed to load config")
+			}
 			storage := mongodb.NewPhoneNumberStorage(mongoDB)
 
 			performMongoTest(t, tc, storage)
