@@ -13,7 +13,7 @@ import (
 )
 
 func main() { //nolint:funlen
-	config, err := config.NewConfig()
+	config, err := config.NewConfig("./env")
 	if err != nil {
 		log.WithError(err).Fatal("failed to load config")
 	}
