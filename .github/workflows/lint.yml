@@ -2,13 +2,6 @@ name: Lint Go Code
 
 on: [push, pull_request]
 
-env:
-  MONGODB_URL: ${{ secrets.MONGODB_URL }}
-  PG_HOST: ${{ secrets.PG_HOST }}
-  PG_PORT: ${{ secrets.PG_PORT }}
-  PG_USER: ${{ secrets.PG_USER }}
-  PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
-
 jobs:
   lint:
     runs-on: ubuntu-latest
