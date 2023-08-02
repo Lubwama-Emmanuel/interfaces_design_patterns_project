@@ -19,6 +19,9 @@ type args struct {
 func TestMongo(t *testing.T) {
 	t.Parallel()
 
+	ctx, cancel := context.WithCancel(context.Background())
+	defer t.Cleanup(cancel)
+
 	tests := []struct {
 		testName string
 		config   mongodb.MongoConfig
@@ -50,13 +53,6 @@ func TestMongo(t *testing.T) {
 		tc := tc
 		t.Run(tc.testName, func(t *testing.T) {
 			t.Parallel()
-
-			ctx := context.Background()
-
-			// config, err := config.NewConfig()
-			// if err != nil {
-			// 	log.WithError(err).Fatal("failed to load config")
-			// }
 
 			mongoDB, configErr := mongodb.NewMongoDB(ctx, cfig.Mongo)
 			if configErr != nil {
